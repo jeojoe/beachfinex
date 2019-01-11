@@ -12,15 +12,22 @@ import { actionCreators } from '../reducers/trades';
 //   return amount >= 0 ? `rgba(255,0,0,${opacity})` : `rgba(0,255,0,${opacity})`;
 // }
 
-const Row = styled.div`
+const HeaderRow = styled.div`
   display: flex;
   padding: 0 5px;
   & p {
-    color: ${props => (props.amount >= 0 ? 'lime' : 'red')};
+    color: #fff;
     font-weight: bold;
-    font-size: 14px;
+    font-size: 12px;
     flex: 25%;
     margin: 0 5px;
+  }
+`;
+
+const TradeRow = styled(HeaderRow)`
+  & p {
+    color: ${props => (props.amount >= 0 ? 'lime' : 'red')};
+    font-size: 14px;
   }
 `;
 
@@ -65,11 +72,11 @@ class Trades extends React.Component {
 
     return trades.map(([id, timestamp, amount, price]) => {
       return (
-        <Row key={id} amount={amount}>
+        <TradeRow key={id} amount={amount}>
           <p>{dayjs(timestamp).format('HH:mm:ss')}</p>
           <p>{Math.abs(amount)}</p>
           <p>{price}</p>
-        </Row>
+        </TradeRow>
       );
     });
   }
@@ -77,6 +84,11 @@ class Trades extends React.Component {
   render() {
     return (
       <div>
+        <HeaderRow>
+          <p>Time</p>
+          <p>Amount</p>
+          <p>Price</p>
+        </HeaderRow>
         <div>{this.renderRow()}</div>
       </div>
     );

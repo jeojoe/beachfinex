@@ -17,7 +17,7 @@ function getBookRowBg(side, percent) {
   )`;
 }
 
-const Row = styled.div`
+const HeaderRow = styled.div`
   display: flex;
   padding: 0 5px;
   & p {
@@ -36,9 +36,10 @@ const Row = styled.div`
   }
 `;
 
-const BookRow = styled(Row)`
+const BookRow = styled(HeaderRow)`
   background: ${props => getBookRowBg(props.side, props.percent)};
   & p {
+    color: ${props => (props.side === 'bids' ? 'lime' : 'red')};
     font-size: 14px;
   }
 `;
@@ -123,9 +124,21 @@ class Book extends React.Component {
     return (
       <div className="row">
         <div className="col-1">
+          <HeaderRow side="bids">
+            <p className="count">Count</p>
+            <p>Amount</p>
+            <p>Total</p>
+            <p className="price">Price</p>
+          </HeaderRow>
           {this.renderRow('bids')}
         </div>
         <div className="col-1">
+          <HeaderRow side="asks">
+            <p className="price">Price</p>
+            <p>Amount</p>
+            <p>Total</p>
+            <p className="count">Count</p>
+          </HeaderRow>
           {this.renderRow('asks')}
         </div>
       </div>
