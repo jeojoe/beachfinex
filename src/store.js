@@ -4,10 +4,12 @@ import logger from 'redux-logger';
 
 import ticker from './reducers/ticker';
 import book from './reducers/book';
+import trades from './reducers/trades';
 
 const reducers = combineReducers({
   ticker,
   book,
+  trades,
 });
 
 const middlewares = applyMiddleware(
