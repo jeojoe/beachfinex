@@ -2,7 +2,7 @@
 
 `Tired of trading? Come to Thailand and trade Bitfinex on the beach.`
 
-Order Book, Ticker and Trades are implemented according to the challenge and Bitfinex's corresponding widgets. Precision and depth bars scale on Order Book can be changed (UX can be improved). WebSocket connection controls are handled separately in each container (Order Book, Ticker, Trades). The market is fixed to tBTCUSD pair.
+Order Book, Ticker and Trades are implemented according to the challenge and Bitfinex's corresponding widgets. Precision and depth bars scale on order book can be changed (UX can be improved). WebSocket connection controls are handled separately in each container (Book, Ticker, Trades). The market is fixed to tBTCUSD pair.
 
 ## Up and Running
   ```
@@ -10,11 +10,11 @@ Order Book, Ticker and Trades are implemented according to the challenge and Bit
   yarn start
   ```
 
-## Can be improved
-1. Performance Optimization
-1. Higher Order Component to reduce repeated WebSocket code in Book, Trades and Ticker containers.
-1. Better UX for Order Book actions
-1. Better Loading Indicator
+## Can Be Improved
+1. Performance optimization for better framerates.
+1. Higher order component to reduce repeated WebSocket code in Book, Trades and Ticker containers.
+1. Better UX for order book actions.
+1. Better loading indicator.
 
 ## Libs
 1. React & Redux
