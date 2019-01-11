@@ -16,23 +16,34 @@ const Background = styled.div`
   background-size: cover;
   background-image: url('${beach}');
   overflow-y: scroll;
+  padding: 15px 3% 0;
+`;
+
+const BlackBox = styled.div`
+  background-color: rgba(0,0,0,0.5);
+  border-radius: 5px;
+  padding: 10px;
+  overflow-y: scroll;
+  margin-bottom: 15px;
 `;
 
 const App = () => (
   <Background>
-    <header className="App-header">
-      <Trades />
+    <BlackBox>
       <Ticker />
-      <Book />
-      <a
-        className="App-link"
-        href="https://reactjs.org"
-        target="_blank"
-        rel="noopener noreferrer"
-      >
-        Learn React
-      </a>
-    </header>
+    </BlackBox>
+    <div className="row">
+      <div className="col-2">
+        <BlackBox>
+          <Book />
+        </BlackBox>
+      </div>
+      <div className="col-1">
+        <BlackBox>
+          <Trades />
+        </BlackBox>
+      </div>
+    </div>
   </Background>
 );
 
