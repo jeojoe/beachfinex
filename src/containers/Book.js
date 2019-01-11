@@ -40,7 +40,7 @@ class Book extends React.Component {
     this.ws = null;
     this.setState({ subscribed: false });
     if (err) {
-      // Not user's action => subscribe again
+      // Has error, not user's action => subscribe again
       console.error(err);
       this.subscribe();
     }
@@ -127,16 +127,18 @@ class Book extends React.Component {
     });
   }
 
-  renderActions = () => {
+  renderActions() {
     const { subscribed, subscribing, precision } = this.state;
     return (
       <ActionRow>
         <div>
+          <b>{subscribed ? 'REAL-TIME' : 'OFFLINE' }</b>
+          {' '}
           {subscribing
-            ? 'Subscribing..'
+            ? '(Subscribing..)'
             : (
               <button onClick={this.toggleWebSocket} type="button">
-                {subscribed ? 'Disconnect' : 'Connect'}
+                {subscribed ? 'Unsubscribe' : 'Subscribe'} Order Book
               </button>
             )
           }

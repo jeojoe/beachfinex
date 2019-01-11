@@ -8,6 +8,10 @@ import dayjs from 'dayjs';
 import { actionCreators } from '../reducers/trades';
 import HeaderRow from '../components/HeaderRow';
 
+const ActionRow = styled.div`
+  padding: 10px 0 0;
+`;
+
 const TradeRow = styled(HeaderRow)`
   & p {
     color: ${props => (props.amount >= 0 ? 'lime' : 'red')};
@@ -18,10 +22,38 @@ const TradeRow = styled(HeaderRow)`
 class Trades extends React.Component {
   constructor(props) {
     super(props);
+    this.state = {
+      subscribed: false,
+      subscribing: true,
+    };
+    this.subscribe();
+  }
+
+  subscribe = () => {
     this.ws = new WebSocket('wss://api.bitfinex.com/ws/2');
     this.ws.onopen = this.onOpen;
     this.ws.onmessage = this.onMessage;
     this.ws.onerror = this.onError;
+    this.setState({ subscribing: true });
+  }
+
+  unsubscribe = (err) => {
+    this.ws.close();
+    this.ws = null;
+    this.setState({ subscribed: false });
+    if (err) {
+      // Has error, not user's action => subscribe again
+      console.error(err);
+      this.subscribe();
+    }
+  }
+
+  toggleWebSocket = () => {
+    if (this.ws) {
+      this.unsubscribe();
+    } else {
+      this.subscribe();
+    }
   }
 
   onOpen = () => {
@@ -37,7 +69,12 @@ class Trades extends React.Component {
     const { initTrades, updateTrades } = this.props;
     // listen to 'te' for speed
     // http://blog.bitfinex.com/api/websocket-api-update/
-    const data = JSON.parse(msg.data);
+    const parsed = JSON.parse(msg.data);
+    if (parsed.event === 'subscribed') {
+      this.setState({ subscribed: true, subscribing: false });
+      return;
+    }
+    const data = parsed;
     if (data[1] && data[1] !== 'hb' && data[1] !== 'tu') {
       if (data[1] !== 'te') {
         initTrades(data[1]);
@@ -47,7 +84,7 @@ class Trades extends React.Component {
     }
   }
 
-  onError = err => console.log(err);
+  onError = err => this.unsubscribe(err);
 
   renderRow() {
     const { trades } = this.props;
@@ -63,6 +100,24 @@ class Trades extends React.Component {
     ));
   }
 
+  renderActions() {
+    const { subscribed, subscribing } = this.state;
+    return (
+      <ActionRow>
+        <b>{subscribed ? 'REAL-TIME' : 'OFFLINE' }</b>
+        {' '}
+        {subscribing
+          ? '(Subscribing..)'
+          : (
+            <button onClick={this.toggleWebSocket} type="button">
+              {subscribed ? 'Unsubscribe' : 'Subscribe'} Trades
+            </button>
+          )
+        }
+      </ActionRow>
+    );
+  }
+
   render() {
     return (
       <div>
@@ -71,7 +126,10 @@ class Trades extends React.Component {
           <p>Amount</p>
           <p>Price</p>
         </HeaderRow>
-        <div>{this.renderRow()}</div>
+        <div>
+          {this.renderRow()}
+        </div>
+        {this.renderActions()}
       </div>
     );
   }
