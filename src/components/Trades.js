@@ -7,7 +7,7 @@ import { actionCreators } from '../reducers/trades';
 
 class Trades extends React.Component {
   componentDidMount() {
-    const { initTrades } = this.props;
+    const { initTrades, updateTrades } = this.props;
     const ws = new WebSocket('wss://api.bitfinex.com/ws/2');
     ws.onopen = () => {
       const openMsg = JSON.stringify({
@@ -25,8 +25,7 @@ class Trades extends React.Component {
         if (data[1] !== 'te') {
           initTrades(data[1]);
         } else {
-          console.log(data[2]);
-          console.log('lol update trades');
+          updateTrades(data[2]);
         }
       }
     };
@@ -42,9 +41,13 @@ class Trades extends React.Component {
       const [id, timestamp, amount, price] = order;
       return (
         <div key={id}>
-          <p>{timestamp}</p>
-          <p>{amount}</p>
-          <p>{price}</p>
+          <p>
+            {timestamp}
+            -
+            {amount}
+            -
+            {price}
+          </p>
         </div>
       );
     });
@@ -62,6 +65,7 @@ class Trades extends React.Component {
 Trades.propTypes = {
   trades: PropTypes.instanceOf(Map), // eslint-disable-line
   initTrades: PropTypes.func.isRequired,
+  updateTrades: PropTypes.func.isRequired,
 };
 
 function mapStateToProps(state) {
@@ -73,6 +77,7 @@ function mapStateToProps(state) {
 function mapDispatchToProps(dispatch) {
   return {
     initTrades: orders => dispatch(actionCreators.initTrades(orders)),
+    updateTrades: order => dispatch(actionCreators.updateTrades(order)),
   };
 }
 
