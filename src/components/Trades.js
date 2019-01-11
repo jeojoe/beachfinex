@@ -2,8 +2,27 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { List } from 'immutable';
+import styled from 'styled-components';
+import dayjs from 'dayjs';
 
 import { actionCreators } from '../reducers/trades';
+
+// function getTradeRowBg(amount) {
+//   const opacity = Math.abs(amount) / 50;
+//   return amount >= 0 ? `rgba(255,0,0,${opacity})` : `rgba(0,255,0,${opacity})`;
+// }
+
+const Row = styled.div`
+  display: flex;
+  padding: 0 5px;
+  & p {
+    color: ${props => (props.amount >= 0 ? 'lime' : 'red')};
+    font-weight: bold;
+    font-size: 14px;
+    flex: 25%;
+    margin: 0 5px;
+  }
+`;
 
 class Trades extends React.Component {
   constructor(props) {
@@ -44,18 +63,13 @@ class Trades extends React.Component {
 
     if (!trades) return 'Fetching..';
 
-    return trades.map((order) => {
-      const [id, timestamp, amount, price] = order;
+    return trades.map(([id, timestamp, amount, price]) => {
       return (
-        <div key={id}>
-          <p>
-            {timestamp}
-            -
-            {amount}
-            -
-            {price}
-          </p>
-        </div>
+        <Row key={id} amount={amount}>
+          <p>{dayjs(timestamp).format('HH:mm:ss')}</p>
+          <p>{Math.abs(amount)}</p>
+          <p>{price}</p>
+        </Row>
       );
     });
   }
