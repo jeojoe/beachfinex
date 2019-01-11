@@ -3,9 +3,11 @@ import thunk from 'redux-thunk';
 import logger from 'redux-logger';
 
 import ticker from './reducers/ticker';
+import book from './reducers/book';
 
 const reducers = combineReducers({
   ticker,
+  book,
 });
 
 const middlewares = applyMiddleware(
