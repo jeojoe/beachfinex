@@ -1,5 +1,4 @@
 import React from 'react';
-import { connect } from 'react-redux';
 import styled from 'styled-components';
 
 import Ticker from './Ticker';
@@ -27,8 +26,16 @@ const BlackBox = styled.div`
   margin-bottom: 15px;
 `;
 
+const Header = styled.h1`
+  font-family: 'Shrikhand', cursive;
+  color: #fff;
+  text-shadow: -3px 0 #000, 0 3px #000, 3px 0 #000, 0 -3px #000;
+  margin: 0;
+`;
+
 const App = () => (
   <Background>
+    <Header>Beachfinex</Header>
     <BlackBox>
       <Ticker />
     </BlackBox>
@@ -47,10 +54,4 @@ const App = () => (
   </Background>
 );
 
-function mapStateToProps(state) {
-  return {
-    ticker: state.ticker,
-  };
-}
-
-export default connect(mapStateToProps)(App);
+export default App;
