@@ -7,8 +7,19 @@ import styled from 'styled-components';
 
 import { actionCreators } from '../reducers/book';
 
+function getBookRowBg(side, percent) {
+  const direction = side === 'bids' ? 'left' : 'right';
+  const color = side === 'bids' ? 'rgba(0, 255, 0, 0.2)' : 'rgba(255, 0, 0, 0.2)';
+  return `linear-gradient(
+    to ${direction},
+    ${color} ${percent}%,
+    transparent 0%
+  )`;
+}
+
 const BookRow = styled.div`
   display: flex;
+  background: ${props => getBookRowBg(props.side, props.percent)};
   & p {
     flex: 1;
     color: #fff;
@@ -51,6 +62,7 @@ class Book extends React.Component {
   onError = err => console.log(err);
 
   renderRow(side) {
+    const { total } = this.props;
     const book = this.props[side]; // eslint-disable-line
 
     if (!book) return 'Fetching..';
@@ -59,13 +71,18 @@ class Book extends React.Component {
     return book.toArray().map(([, order]) => {
       const [price, count, amount] = order;
       acc = acc.plus(amount);
+      const percent = acc.abs().dividedBy(total).times(100).toFixed(0);
       const countStr = count.toFixed(0);
       const amountStr = Math.abs(amount).toFixed(2);
       const totalStr = acc.abs().toFixed(2);
       const priceStr = new BigNumber(price).toFixed(2);
 
       return (
-        <BookRow key={order.price}>
+        <BookRow
+          key={order.price}
+          side={side}
+          percent={percent}
+        >
           {side === 'bids'
             ? (
               <>
@@ -107,12 +124,16 @@ Book.propTypes = {
   bids: PropTypes.instanceOf(Map), // eslint-disable-line
   asks: PropTypes.instanceOf(Map), // eslint-disable-line
   updateBook: PropTypes.func.isRequired,
+  total: PropTypes.instanceOf(BigNumber).isRequired,
 };
 
 function mapStateToProps(state) {
   return {
     bids: state.book.bids,
     asks: state.book.asks,
+    total: (new BigNumber(state.book.asksTotal))
+      .abs()
+      .plus(state.book.bidsTotal),
   };
 }
 
