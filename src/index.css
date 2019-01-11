@@ -24,6 +24,6 @@ code {
 }
 
 .row > .col-2 {
-  flex: 1;
+  flex: 2;
   margin-right: 10px;
 }
