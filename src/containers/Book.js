@@ -15,6 +15,7 @@ class Book extends React.Component {
       subscribed: false,
       subscribing: true,
       precision: 'P0',
+      zoom: 1,
     };
     this.subscribe();
   }
@@ -34,6 +35,14 @@ class Book extends React.Component {
     if (err) {
       // Not user's action => subscribe again
       console.error(err);
+      this.subscribe();
+    }
+  }
+
+  toggleWebSocket = () => {
+    if (this.ws) {
+      this.unsubscribe();
+    } else {
       this.subscribe();
     }
   }
@@ -68,14 +77,6 @@ class Book extends React.Component {
 
   onError = err => this.unsubscribe(err);
 
-  toggleWebSocket = () => {
-    if (this.ws) {
-      this.unsubscribe();
-    } else {
-      this.subscribe();
-    }
-  }
-
   changePrecision = (precision) => {
     const { precision: current } = this.state;
     if (precision !== current) {
@@ -84,8 +85,18 @@ class Book extends React.Component {
     }
   }
 
+  zoomIn = () => this.setState(prev => ({
+    zoom: prev.zoom < 3 ? prev.zoom + 0.1 : prev.zoom,
+  }))
+
+  zoomOut = () => this.setState(prev => ({
+    zoom: prev.zoom > 0.3 ? prev.zoom - 0.1 : prev.zoom,
+  }))
+
   renderRow(side) {
     const { total } = this.props;
+    const { zoom } = this.state;
+
     const book = this.props[side]; // eslint-disable-line
 
     if (!book) return 'Fetching..';
@@ -94,7 +105,10 @@ class Book extends React.Component {
     return book.toArray().map(([, order]) => {
       const [price, , amount] = order;
       acc = acc.plus(amount);
-      const percent = acc.abs().dividedBy(total).times(100).toFixed(0);
+      const percent = acc.abs().dividedBy(total)
+        .times(100)
+        .times(zoom)
+        .toFixed(0);
       return (
         <BookRow
           key={`${price}${amount}`}
@@ -119,6 +133,7 @@ class Book extends React.Component {
             </button>
           )
         }
+        {' | '}
         <button onClick={() => this.changePrecision('P0')} type="button">
           P0
         </button>
@@ -131,7 +146,15 @@ class Book extends React.Component {
         <button onClick={() => this.changePrecision('P3')} type="button">
           P3
         </button>
+        {' '}
         <b>Current Precision: {precision}</b>
+        {' | '}
+        <button onClick={this.zoomIn} type="button">
+          Zoom In +
+        </button>
+        <button onClick={this.zoomOut} type="button">
+          Zoom out -
+        </button>
       </div>
     );
   }
