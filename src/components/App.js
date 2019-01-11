@@ -2,10 +2,12 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 
+import Ticker from './Ticker';
+
 const App = ({ ticker }) => (
   <div className="App">
     <header className="App-header">
-      {ticker}
+      <Ticker />
       <a
         className="App-link"
         href="https://reactjs.org"
