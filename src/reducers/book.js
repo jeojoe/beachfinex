@@ -3,6 +3,7 @@ import { Map } from 'immutable';
 // Action types
 
 export const INIT_BOOK = 'INIT_BOOK';
+export const UPDATE_BOOK = 'UPDATE_BOOK';
 
 // Action creators
 
@@ -12,9 +13,16 @@ function initBook(orders) {
     orders,
   };
 }
+function updateBook(order) {
+  return {
+    type: UPDATE_BOOK,
+    order,
+  };
+}
 
 export const actionCreators = {
   initBook,
+  updateBook,
 };
 
 // Reducer
@@ -49,6 +57,18 @@ const book = (state = initialState, action) => {
       return {
         bids: sortedBids,
         asks: sortedAsks,
+      };
+    }
+    case UPDATE_BOOK: {
+      const [price, count, amount] = action.order;
+      const side = amount >= 0 ? 'bids' : 'asks';
+      const isDelete = count === 0;
+      const updatedBook = isDelete
+        ? state[side].delete(price)
+        : state[side].set(price, action.order);
+      return {
+        ...state,
+        [side]: updatedBook,
       };
     }
     default: {

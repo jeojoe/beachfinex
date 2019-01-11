@@ -7,7 +7,7 @@ import { actionCreators } from '../reducers/book';
 
 class Book extends React.Component {
   componentDidMount() {
-    const { initBook } = this.props;
+    const { initBook, updateBook } = this.props;
     const ws = new WebSocket('wss://api.bitfinex.com/ws/2');
     ws.onopen = () => {
       const openMsg = JSON.stringify({
@@ -23,7 +23,7 @@ class Book extends React.Component {
         if (Array.isArray(data[0])) {
           initBook(data);
         } else {
-          console.log('lol');
+          updateBook(data);
         }
       }
     };
@@ -61,6 +61,7 @@ Book.propTypes = {
   initBook: PropTypes.func.isRequired,
   bids: PropTypes.instanceOf(Map), // eslint-disable-line
   asks: PropTypes.instanceOf(Map), // eslint-disable-line
+  updateBook: PropTypes.func.isRequired,
 };
 
 function mapStateToProps(state) {
@@ -73,6 +74,7 @@ function mapStateToProps(state) {
 function mapDispatchToProps(dispatch) {
   return {
     initBook: orders => dispatch(actionCreators.initBook(orders)),
+    updateBook: order => dispatch(actionCreators.updateBook(order)),
   };
 }
 
