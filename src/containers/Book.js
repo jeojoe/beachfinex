@@ -16,14 +16,14 @@ const ActionRow = styled.div`
 `;
 
 class Book extends React.Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      subscribed: false,
-      subscribing: true,
-      precision: 'P0',
-      zoom: 1,
-    };
+  state = {
+    subscribed: false,
+    subscribing: true,
+    precision: 'P0',
+    zoom: 1,
+  };
+
+  componentDidMount() {
     this.subscribe();
   }
 

@@ -20,12 +20,12 @@ const TradeRow = styled(HeaderRow)`
 `;
 
 class Trades extends React.Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      subscribed: false,
-      subscribing: true,
-    };
+  state = {
+    subscribed: false,
+    subscribing: true,
+  };
+
+  componentDidMount() {
     this.subscribe();
   }
 
