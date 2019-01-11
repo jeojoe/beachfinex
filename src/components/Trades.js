@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-import { Map } from 'immutable';
+import { List } from 'immutable';
 
 import { actionCreators } from '../reducers/trades';
 
@@ -63,7 +63,7 @@ class Trades extends React.Component {
 }
 
 Trades.propTypes = {
-  trades: PropTypes.instanceOf(Map), // eslint-disable-line
+  trades: PropTypes.instanceOf(List), // eslint-disable-line
   initTrades: PropTypes.func.isRequired,
   updateTrades: PropTypes.func.isRequired,
 };
