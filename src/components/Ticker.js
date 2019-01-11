@@ -1,8 +1,23 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
+import styled from 'styled-components';
 
 import { actionCreators } from '../reducers/ticker';
+
+const Pair = styled.h1`
+  color: #fff;
+  margin-left: 5px;
+  margin-right: 30px;
+`;
+
+const Label = styled.p`
+  color: #fff;
+`;
+
+const Value = styled.p`
+  color: #fff;
+`;
 
 class Ticker extends React.Component {
   constructor(props) {
@@ -35,8 +50,32 @@ class Ticker extends React.Component {
   render() {
     const { ticker } = this.props;
 
+    if (!ticker.lastPrice) return 'Fetching..';
+
     return (
-      <div>{ ticker.lastPrice }</div>
+      <div className="row">
+        <Pair>BTC/USD</Pair>
+        <div className="col-1">
+          <Label>Last Price</Label>
+          <Value>{ticker.lastPrice}</Value>
+        </div>
+        <div className="col-1">
+          <Label>Change 24hr</Label>
+          <Value>{ticker.dailyChange} ({ticker.dailyChangePerc})</Value>
+        </div>
+        <div className="col-1">
+          <Label>High 24hr</Label>
+          <Value>{ticker.high}</Value>
+        </div>
+        <div className="col-1">
+          <Label>Low 24hr</Label>
+          <Value>{ticker.low}</Value>
+        </div>
+        <div className="col-1">
+          <Label>Volume 24hr</Label>
+          <Value>{ticker.volume}</Value>
+        </div>
+      </div>
     );
   }
 }
