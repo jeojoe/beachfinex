@@ -5,25 +5,32 @@ import { connect } from 'react-redux';
 import { actionCreators } from '../reducers/ticker';
 
 class Ticker extends React.Component {
-  componentDidMount() {
-    const { setTicker } = this.props;
-    const ws = new WebSocket('wss://api.bitfinex.com/ws/2');
-    ws.onopen = () => {
-      const openMsg = JSON.stringify({
-        event: 'subscribe',
-        channel: 'ticker',
-        symbol: 'tBTCUSD',
-      });
-      ws.send(openMsg);
-    };
-    ws.onmessage = (msg) => {
-      const data = JSON.parse(msg.data)[1];
-      if (data && data !== 'hb') {
-        setTicker(data);
-      }
-    };
-    ws.onerror = err => console.log(err);
+  constructor(props) {
+    super(props);
+    this.ws = new WebSocket('wss://api.bitfinex.com/ws/2');
+    this.ws.onopen = this.onOpen;
+    this.ws.onmessage = this.onMessage;
+    this.ws.onerror = this.onError;
   }
+
+  onOpen = () => {
+    const openMsg = JSON.stringify({
+      event: 'subscribe',
+      channel: 'ticker',
+      symbol: 'tBTCUSD',
+    });
+    this.ws.send(openMsg);
+  }
+
+  onMessage = (msg) => {
+    const { setTicker } = this.props;
+    const data = JSON.parse(msg.data)[1];
+    if (data && data !== 'hb') {
+      setTicker(data);
+    }
+  }
+
+  onError = err => console.log(err);
 
   render() {
     const { ticker } = this.props;
