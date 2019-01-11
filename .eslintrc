@@ -8,7 +8,8 @@
     "jest/globals": true
   },
   "globals": {
-    "document": true
+    "document": true,
+    "WebSocket": true
   },
   "rules": {
     "react/jsx-filename-extension": 0,
