@@ -4,6 +4,7 @@
   "private": true,
   "dependencies": {
     "bignumber.js": "^8.0.1",
+    "dayjs": "^1.7.8",
     "immutable": "^4.0.0-rc.12",
     "prop-types": "^15.6.2",
     "react": "^16.7.0",
