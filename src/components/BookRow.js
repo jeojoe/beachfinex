@@ -61,7 +61,7 @@ const BookRow = ({
 
 BookRow.propTypes = {
   side: PropTypes.string.isRequired,
-  order: PropTypes.array.isRequired,
+  order: PropTypes.arrayOf(PropTypes.number).isRequired,
   acc: PropTypes.instanceOf(BigNumber).isRequired,
   percent: PropTypes.string.isRequired,
 };

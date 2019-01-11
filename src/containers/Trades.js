@@ -94,8 +94,8 @@ class Trades extends React.Component {
     return trades.map(([id, timestamp, amount, price]) => (
       <TradeRow key={id} amount={amount}>
         <p>{dayjs(timestamp).format('HH:mm:ss')}</p>
-        <p>{Math.abs(amount)}</p>
         <p>{price}</p>
+        <p>{Math.abs(amount)}</p>
       </TradeRow>
     ));
   }
@@ -123,8 +123,8 @@ class Trades extends React.Component {
       <div>
         <HeaderRow>
           <p>Time</p>
-          <p>Amount</p>
           <p>Price</p>
+          <p>Amount</p>
         </HeaderRow>
         <div>
           {this.renderRow()}
