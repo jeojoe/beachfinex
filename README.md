@@ -17,4 +17,10 @@ Order Book, Ticker and Trades are implemented according to the challenge and Bit
 1. day.js
 1. styled-components
 
+## Up and Running
+  ```
+  yarn
+  yarn start
+  ```
+
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
