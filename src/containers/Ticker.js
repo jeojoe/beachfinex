@@ -77,7 +77,7 @@ class Ticker extends React.Component {
 
     if (!lastPrice) return 'Fetching..';
 
-    document.title = `BTC-USD ${lastPrice} | Beachfinex`;
+    document.title = `BTC-USD ${lastPrice.toFixed(1)} | Beachfinex`;
 
     return (
       <div className="row justify-between">
