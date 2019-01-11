@@ -2,8 +2,21 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { Map } from 'immutable';
+import BigNumber from 'bignumber.js';
+import styled from 'styled-components';
 
 import { actionCreators } from '../reducers/book';
+
+const BookRow = styled.div`
+  display: flex;
+  & p {
+    flex: 1;
+    color: #fff;
+    margin: 2px 0;
+    font-weight: bold;
+    font-size: 14px;
+  }
+`;
 
 class Book extends React.Component {
   constructor(props) {
@@ -42,23 +55,48 @@ class Book extends React.Component {
 
     if (!book) return 'Fetching..';
 
+    let acc = new BigNumber(0);
     return book.toArray().map(([, order]) => {
       const [price, count, amount] = order;
+      acc = acc.plus(amount);
+      const countStr = count.toFixed(0);
+      const amountStr = Math.abs(amount).toFixed(2);
+      const totalStr = acc.abs().toFixed(2);
+      const priceStr = new BigNumber(price).toFixed(2);
+
       return (
-        <div>
-          <p>{price}</p>
-          <p>{amount}</p>
-          <p>{count}</p>
-        </div>
+        <BookRow key={order.price}>
+          {side === 'bids'
+            ? (
+              <>
+                <p>{countStr}</p>
+                <p>{amountStr}</p>
+                <p>{totalStr}</p>
+                <p>{priceStr}</p>
+              </>
+            ) : (
+              <>
+                <p>{priceStr}</p>
+                <p>{totalStr}</p>
+                <p>{amountStr}</p>
+                <p>{countStr}</p>
+              </>
+            )
+          }
+        </BookRow>
       );
     });
   }
 
   render() {
     return (
-      <div>
-        <div>{this.renderRow('bids')}</div>
-        <div>{this.renderRow('asks')}</div>
+      <div className="row">
+        <div className="col-1">
+          {this.renderRow('bids')}
+        </div>
+        <div className="col-1">
+          {this.renderRow('asks')}
+        </div>
       </div>
     );
   }
