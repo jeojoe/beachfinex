@@ -3,10 +3,17 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { Map } from 'immutable';
 import BigNumber from 'bignumber.js';
+import styled from 'styled-components';
 
 import { actionCreators } from '../reducers/book';
 import HeaderRow from '../components/HeaderRow';
 import BookRow from '../components/BookRow';
+
+const ActionRow = styled.div`
+  display: flex;
+  justify-content: space-between;
+  padding: 10px 0 0;
+`;
 
 class Book extends React.Component {
   constructor(props) {
@@ -96,7 +103,6 @@ class Book extends React.Component {
   renderRow(side) {
     const { total } = this.props;
     const { zoom } = this.state;
-
     const book = this.props[side]; // eslint-disable-line
 
     if (!book) return 'Fetching..';
@@ -124,38 +130,42 @@ class Book extends React.Component {
   renderActions = () => {
     const { subscribed, subscribing, precision } = this.state;
     return (
-      <div style={{ textAlign: 'center' }}>
-        {subscribing
-          ? 'Subscribing..'
-          : (
-            <button onClick={this.toggleWebSocket} type="button">
-              {subscribed ? 'Disconnect' : 'Connect'}
-            </button>
-          )
-        }
-        {' | '}
-        <button onClick={() => this.changePrecision('P0')} type="button">
-          P0
-        </button>
-        <button onClick={() => this.changePrecision('P1')} type="button">
-          P1
-        </button>
-        <button onClick={() => this.changePrecision('P2')} type="button">
-          P2
-        </button>
-        <button onClick={() => this.changePrecision('P3')} type="button">
-          P3
-        </button>
-        {' '}
-        <b>Current Precision: {precision}</b>
-        {' | '}
-        <button onClick={this.zoomIn} type="button">
-          Zoom In +
-        </button>
-        <button onClick={this.zoomOut} type="button">
-          Zoom out -
-        </button>
-      </div>
+      <ActionRow>
+        <div>
+          {subscribing
+            ? 'Subscribing..'
+            : (
+              <button onClick={this.toggleWebSocket} type="button">
+                {subscribed ? 'Disconnect' : 'Connect'}
+              </button>
+            )
+          }
+        </div>
+        <div>
+          <button onClick={() => this.changePrecision('P0')} type="button">
+            P0
+          </button>
+          <button onClick={() => this.changePrecision('P1')} type="button">
+            P1
+          </button>
+          <button onClick={() => this.changePrecision('P2')} type="button">
+            P2
+          </button>
+          <button onClick={() => this.changePrecision('P3')} type="button">
+            P3
+          </button>
+          {' '}
+          <b>Current Precision: {precision}</b>
+        </div>
+        <div>
+          <button onClick={this.zoomIn} type="button">
+            Zoom In +
+          </button>
+          <button onClick={this.zoomOut} type="button">
+            Zoom out -
+          </button>
+        </div>
+      </ActionRow>
     );
   }
 
