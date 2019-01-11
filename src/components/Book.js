@@ -49,6 +49,7 @@ class Book extends React.Component {
     super(props);
     this.state = {
       subscribed: false,
+      subscribing: true,
     };
     this.subscribe();
   }
@@ -58,13 +59,18 @@ class Book extends React.Component {
     this.ws.onopen = this.onOpen;
     this.ws.onmessage = this.onMessage;
     this.ws.onerror = this.onError;
+    this.setState({ subscribing: true });
   }
 
   unsubscribe = (err) => {
-    if (err) console.error(err);
     this.ws.close();
     this.ws = null;
     this.setState({ subscribed: false });
+    if (err) {
+      // Not user's action => subscribe again
+      console.error(err);
+      this.subscribe();
+    }
   }
 
   onOpen = () => {
@@ -81,7 +87,7 @@ class Book extends React.Component {
 
     const parsed = JSON.parse(msg.data);
     if (parsed.event === 'subscribed') {
-      this.setState({ subscribed: true });
+      this.setState({ subscribed: true, subscribing: false });
       return;
     }
 
@@ -99,7 +105,7 @@ class Book extends React.Component {
 
   toggleWebSocket = () => {
     if (this.ws) {
-      this.unsubscribe('User action');
+      this.unsubscribe();
     } else {
       this.subscribe();
     }
@@ -150,30 +156,39 @@ class Book extends React.Component {
   }
 
   render() {
-    const { subscribed } = this.state;
+    const { subscribed, subscribing } = this.state;
 
     return (
-      <div className="row">
-        <button onClick={this.toggleWebSocket} type="button">
-          {subscribed ? 'Disconnect' : 'Connect'}
-        </button>
-        <div className="col-1">
-          <HeaderRow side="bids">
-            <p className="count">Count</p>
-            <p>Amount</p>
-            <p>Total</p>
-            <p className="price">Price</p>
-          </HeaderRow>
-          {this.renderRow('bids')}
+      <div>
+        <div className="row">
+          <div className="col-1">
+            <HeaderRow side="bids">
+              <p className="count">Count</p>
+              <p>Amount</p>
+              <p>Total</p>
+              <p className="price">Price</p>
+            </HeaderRow>
+            {this.renderRow('bids')}
+          </div>
+          <div className="col-1">
+            <HeaderRow side="asks">
+              <p className="price">Price</p>
+              <p>Amount</p>
+              <p>Total</p>
+              <p className="count">Count</p>
+            </HeaderRow>
+            {this.renderRow('asks')}
+          </div>
         </div>
-        <div className="col-1">
-          <HeaderRow side="asks">
-            <p className="price">Price</p>
-            <p>Amount</p>
-            <p>Total</p>
-            <p className="count">Count</p>
-          </HeaderRow>
-          {this.renderRow('asks')}
+        <div style={{ textAlign: 'center' }}>
+          {subscribing
+            ? 'Subscribing..'
+            : (
+              <button onClick={this.toggleWebSocket} type="button">
+                {subscribed ? 'Disconnect' : 'Connect'}
+              </button>
+            )
+          }
         </div>
       </div>
     );
