@@ -47,10 +47,24 @@ const BookRow = styled(HeaderRow)`
 class Book extends React.Component {
   constructor(props) {
     super(props);
+    this.state = {
+      subscribed: false,
+    };
+    this.subscribe();
+  }
+
+  subscribe = () => {
     this.ws = new WebSocket('wss://api.bitfinex.com/ws/2');
     this.ws.onopen = this.onOpen;
     this.ws.onmessage = this.onMessage;
     this.ws.onerror = this.onError;
+  }
+
+  unsubscribe = (err) => {
+    if (err) console.error(err);
+    this.ws.close();
+    this.ws = null;
+    this.setState({ subscribed: false });
   }
 
   onOpen = () => {
@@ -64,7 +78,14 @@ class Book extends React.Component {
 
   onMessage = (msg) => {
     const { initBook, updateBook } = this.props;
-    const data = JSON.parse(msg.data)[1];
+
+    const parsed = JSON.parse(msg.data);
+    if (parsed.event === 'subscribed') {
+      this.setState({ subscribed: true });
+      return;
+    }
+
+    const data = parsed[1];
     if (data && data !== 'hb') {
       if (Array.isArray(data[0])) {
         initBook(data);
@@ -74,7 +95,15 @@ class Book extends React.Component {
     }
   }
 
-  onError = err => console.log(err);
+  onError = err => this.unsubscribe(err);
+
+  toggleWebSocket = () => {
+    if (this.ws) {
+      this.unsubscribe('User action');
+    } else {
+      this.subscribe();
+    }
+  }
 
   renderRow(side) {
     const { total } = this.props;
@@ -121,8 +150,13 @@ class Book extends React.Component {
   }
 
   render() {
+    const { subscribed } = this.state;
+
     return (
       <div className="row">
+        <button onClick={this.toggleWebSocket} type="button">
+          {subscribed ? 'Disconnect' : 'Connect'}
+        </button>
         <div className="col-1">
           <HeaderRow side="bids">
             <p className="count">Count</p>
