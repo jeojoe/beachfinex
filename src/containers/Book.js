@@ -14,6 +14,7 @@ class Book extends React.Component {
     this.state = {
       subscribed: false,
       subscribing: true,
+      precision: 'P0',
     };
     this.subscribe();
   }
@@ -38,10 +39,12 @@ class Book extends React.Component {
   }
 
   onOpen = () => {
+    const { precision } = this.state;
     const openMsg = JSON.stringify({
       event: 'subscribe',
       channel: 'book',
       symbol: 'tBTCUSD',
+      prec: precision,
     });
     this.ws.send(openMsg);
   }
@@ -73,8 +76,17 @@ class Book extends React.Component {
     }
   }
 
+  changePrecision = (precision) => {
+    const { precision: current } = this.state;
+    if (precision !== current) {
+      if (this.ws) this.unsubscribe();
+      this.setState({ precision }, this.subscribe);
+    }
+  }
+
   renderRow(side) {
     const { total } = this.props;
+    // const { subscribed } = this.state;
     const book = this.props[side]; // eslint-disable-line
 
     if (!book) return 'Fetching..';
@@ -96,9 +108,35 @@ class Book extends React.Component {
     });
   }
 
-  render() {
+  renderActions = () => {
     const { subscribed, subscribing } = this.state;
+    return (
+      <div style={{ textAlign: 'center' }}>
+        {subscribing
+          ? 'Subscribing..'
+          : (
+            <button onClick={this.toggleWebSocket} type="button">
+              {subscribed ? 'Disconnect' : 'Connect'}
+            </button>
+          )
+        }
+        <button onClick={() => this.changePrecision('P0')} type="button">
+          P0
+        </button>
+        <button onClick={() => this.changePrecision('P1')} type="button">
+          P1
+        </button>
+        <button onClick={() => this.changePrecision('P2')} type="button">
+          P2
+        </button>
+        <button onClick={() => this.changePrecision('P3')} type="button">
+          P3
+        </button>
+      </div>
+    );
+  }
 
+  render() {
     return (
       <div>
         <div className="row">
@@ -121,16 +159,7 @@ class Book extends React.Component {
             {this.renderRow('asks')}
           </div>
         </div>
-        <div style={{ textAlign: 'center' }}>
-          {subscribing
-            ? 'Subscribing..'
-            : (
-              <button onClick={this.toggleWebSocket} type="button">
-                {subscribed ? 'Disconnect' : 'Connect'}
-              </button>
-            )
-          }
-        </div>
+        {this.renderActions()}
       </div>
     );
   }
