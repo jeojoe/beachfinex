@@ -4,6 +4,12 @@
 
 Order Book, Ticker and Trades are implemented according to the challenge and Bitfinex's corresponding widgets. Precision and depth bars scale on Order Book can be changed (UX can be improved). WebSocket connection controls are handled separately in each container (Order Book, Ticker, Trades). The market is fixed to tBTCUSD pair.
 
+## Up and Running
+  ```
+  yarn
+  yarn start
+  ```
+
 ## Can be improved
 1. Performance Optimization
 1. Higher Order Component to reduce repeated WebSocket code in Book, Trades and Ticker containers.
@@ -16,11 +22,5 @@ Order Book, Ticker and Trades are implemented according to the challenge and Bit
 1. BigNumber.js
 1. day.js
 1. styled-components
-
-## Up and Running
-  ```
-  yarn
-  yarn start
-  ```
 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
