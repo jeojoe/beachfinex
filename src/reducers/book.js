@@ -39,9 +39,15 @@ function sortBook(side, book) {
   );
 }
 
+function sumBook(book) {
+  return book.reduce((acc, order) => acc + order[2], 0);
+}
+
 const initialState = {
   bids: null,
+  totalBids: 0,
   asks: null,
+  totalAsks: 0,
 };
 
 const book = (state = initialState, action) => {
@@ -56,7 +62,9 @@ const book = (state = initialState, action) => {
       const sortedAsks = sortBook('asks', Map(iterableAsks));
       return {
         bids: sortedBids,
+        bidsTotal: sumBook(sortedBids),
         asks: sortedAsks,
+        asksTotal: sumBook(sortedAsks),
       };
     }
     case UPDATE_BOOK: {
@@ -69,6 +77,7 @@ const book = (state = initialState, action) => {
       return {
         ...state,
         [side]: updatedBook,
+        [`${side}Total`]: sumBook(updatedBook),
       };
     }
     default: {
