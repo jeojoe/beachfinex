@@ -1,12 +1,25 @@
 import React from 'react';
 import { connect } from 'react-redux';
+import styled from 'styled-components';
 
 import Ticker from './Ticker';
 import Book from './Book';
 import Trades from './Trades';
 
+import beach from '../images/beach.jpg';
+
+const Background = styled.div`
+  height: 100vh;
+  width: 100vw;
+  box-sizing: border-box;
+  background-position: bottom;
+  background-size: cover;
+  background-image: url('${beach}');
+  overflow-y: scroll;
+`;
+
 const App = () => (
-  <div className="App">
+  <Background>
     <header className="App-header">
       <Trades />
       <Ticker />
@@ -20,7 +33,7 @@ const App = () => (
         Learn React
       </a>
     </header>
-  </div>
+  </Background>
 );
 
 function mapStateToProps(state) {
