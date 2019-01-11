@@ -3,10 +3,12 @@ import { connect } from 'react-redux';
 
 import Ticker from './Ticker';
 import Book from './Book';
+import Trades from './Trades';
 
 const App = () => (
   <div className="App">
     <header className="App-header">
+      <Trades />
       <Ticker />
       <Book />
       <a
