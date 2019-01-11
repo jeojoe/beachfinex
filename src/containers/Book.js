@@ -86,7 +86,6 @@ class Book extends React.Component {
 
   renderRow(side) {
     const { total } = this.props;
-    // const { subscribed } = this.state;
     const book = this.props[side]; // eslint-disable-line
 
     if (!book) return 'Fetching..';
@@ -109,7 +108,7 @@ class Book extends React.Component {
   }
 
   renderActions = () => {
-    const { subscribed, subscribing } = this.state;
+    const { subscribed, subscribing, precision } = this.state;
     return (
       <div style={{ textAlign: 'center' }}>
         {subscribing
@@ -132,6 +131,7 @@ class Book extends React.Component {
         <button onClick={() => this.changePrecision('P3')} type="button">
           P3
         </button>
+        <b>Current Precision: {precision}</b>
       </div>
     );
   }
