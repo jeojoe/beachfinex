@@ -1,10 +1,9 @@
 import React from 'react';
-import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 
 import Ticker from './Ticker';
 
-const App = ({ ticker }) => (
+const App = () => (
   <div className="App">
     <header className="App-header">
       <Ticker />
@@ -19,10 +18,6 @@ const App = ({ ticker }) => (
     </header>
   </div>
 );
-
-App.propTypes = {
-  ticker: PropTypes.string.isRequired,
-};
 
 function mapStateToProps(state) {
   return {
