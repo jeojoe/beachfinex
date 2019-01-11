@@ -2,11 +2,13 @@ import React from 'react';
 import { connect } from 'react-redux';
 
 import Ticker from './Ticker';
+import Book from './Book';
 
 const App = () => (
   <div className="App">
     <header className="App-header">
       <Ticker />
+      <Book />
       <a
         className="App-link"
         href="https://reactjs.org"
