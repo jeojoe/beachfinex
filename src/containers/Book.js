@@ -3,46 +3,10 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { Map } from 'immutable';
 import BigNumber from 'bignumber.js';
-import styled from 'styled-components';
 
 import { actionCreators } from '../reducers/book';
-
-function getBookRowBg(side, percent) {
-  const direction = side === 'bids' ? 'left' : 'right';
-  const color = side === 'bids' ? 'rgba(0, 255, 0, 0.2)' : 'rgba(255, 0, 0, 0.2)';
-  return `linear-gradient(
-    to ${direction},
-    ${color} ${percent}%,
-    transparent 0%
-  )`;
-}
-
-const HeaderRow = styled.div`
-  display: flex;
-  padding: 0 5px;
-  & p {
-    color: #fff;
-    font-weight: bold;
-    font-size: 12px;
-    flex: 25%;
-    margin: 0 0 3px;
-    text-align: ${props => (props.side === 'bids' ? 'right' : 'left')};
-    &.count {
-      flex: 15%;
-    }
-    &.price {
-      flex: 35%;
-    }
-  }
-`;
-
-const BookRow = styled(HeaderRow)`
-  background: ${props => getBookRowBg(props.side, props.percent)};
-  & p {
-    color: ${props => (props.side === 'bids' ? 'lime' : 'red')};
-    font-size: 14px;
-  }
-`;
+import HeaderRow from '../components/HeaderRow';
+import BookRow from '../components/BookRow';
 
 class Book extends React.Component {
   constructor(props) {
@@ -84,13 +48,11 @@ class Book extends React.Component {
 
   onMessage = (msg) => {
     const { initBook, updateBook } = this.props;
-
     const parsed = JSON.parse(msg.data);
     if (parsed.event === 'subscribed') {
       this.setState({ subscribed: true, subscribing: false });
       return;
     }
-
     const data = parsed[1];
     if (data && data !== 'hb') {
       if (Array.isArray(data[0])) {
@@ -119,38 +81,17 @@ class Book extends React.Component {
 
     let acc = new BigNumber(0);
     return book.toArray().map(([, order]) => {
-      const [price, count, amount] = order;
+      const [price, , amount] = order;
       acc = acc.plus(amount);
       const percent = acc.abs().dividedBy(total).times(100).toFixed(0);
-      const countStr = count.toFixed(0);
-      const amountStr = Math.abs(amount).toFixed(2);
-      const totalStr = acc.abs().toFixed(2);
-      const priceStr = new BigNumber(price).toFixed(2);
-
       return (
         <BookRow
-          key={order.price}
+          key={`${price}${amount}`}
           side={side}
+          order={order}
+          acc={acc}
           percent={percent}
-        >
-          {side === 'bids'
-            ? (
-              <>
-                <p className="count">{countStr}</p>
-                <p>{amountStr}</p>
-                <p>{totalStr}</p>
-                <p className="price">{priceStr}</p>
-              </>
-            ) : (
-              <>
-                <p className="price">{priceStr}</p>
-                <p>{totalStr}</p>
-                <p>{amountStr}</p>
-                <p className="count">{countStr}</p>
-              </>
-            )
-          }
-        </BookRow>
+        />
       );
     });
   }

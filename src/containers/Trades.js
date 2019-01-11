@@ -6,23 +6,7 @@ import styled from 'styled-components';
 import dayjs from 'dayjs';
 
 import { actionCreators } from '../reducers/trades';
-
-// function getTradeRowBg(amount) {
-//   const opacity = Math.abs(amount) / 50;
-//   return amount >= 0 ? `rgba(255,0,0,${opacity})` : `rgba(0,255,0,${opacity})`;
-// }
-
-const HeaderRow = styled.div`
-  display: flex;
-  padding: 0 5px;
-  & p {
-    color: #fff;
-    font-weight: bold;
-    font-size: 12px;
-    flex: 25%;
-    margin: 0 5px;
-  }
-`;
+import HeaderRow from '../components/HeaderRow';
 
 const TradeRow = styled(HeaderRow)`
   & p {
@@ -70,15 +54,13 @@ class Trades extends React.Component {
 
     if (!trades) return 'Fetching..';
 
-    return trades.map(([id, timestamp, amount, price]) => {
-      return (
-        <TradeRow key={id} amount={amount}>
-          <p>{dayjs(timestamp).format('HH:mm:ss')}</p>
-          <p>{Math.abs(amount)}</p>
-          <p>{price}</p>
-        </TradeRow>
-      );
-    });
+    return trades.map(([id, timestamp, amount, price]) => (
+      <TradeRow key={id} amount={amount}>
+        <p>{dayjs(timestamp).format('HH:mm:ss')}</p>
+        <p>{Math.abs(amount)}</p>
+        <p>{price}</p>
+      </TradeRow>
+    ));
   }
 
   render() {

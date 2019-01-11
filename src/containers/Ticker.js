@@ -8,7 +8,7 @@ import { actionCreators } from '../reducers/ticker';
 const Pair = styled.h1`
   color: #fff;
   margin-left: 5px;
-  margin-right: 30px;
+  margin-right: 100px;
 `;
 
 const Label = styled.p`
