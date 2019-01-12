@@ -1,0 +1,80 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`<Ticker /> renders correctly 1`] = `
+<div
+  className="row justify-between"
+>
+  <div
+    className="row"
+  >
+    <styled.img
+      alt="BTC Logo"
+      height="50"
+      src="BTC.png"
+      width="50"
+    />
+    <styled.h1>
+      BTC/USD
+    </styled.h1>
+  </div>
+  <div
+    className="row align-center"
+  >
+    <div
+      className="col-1 ticker"
+    >
+      <styled.p>
+        Last Price
+      </styled.p>
+      <styled.p>
+        6.0
+      </styled.p>
+    </div>
+    <div
+      className="col-1 ticker"
+    >
+      <styled.p>
+        Change 24hr
+      </styled.p>
+      <styled.p
+        color="lime"
+      >
+        4.00
+         (
+        5.00
+        %)
+      </styled.p>
+    </div>
+    <div
+      className="col-1 ticker"
+    >
+      <styled.p>
+        High 24hr
+      </styled.p>
+      <styled.p>
+        8.0
+      </styled.p>
+    </div>
+    <div
+      className="col-1 ticker"
+    >
+      <styled.p>
+        Low 24hr
+      </styled.p>
+      <styled.p>
+        9.0
+      </styled.p>
+    </div>
+    <div
+      className="col-1 ticker"
+    >
+      <styled.p>
+        Volume 24hr
+      </styled.p>
+      <styled.p>
+        7.00
+      </styled.p>
+    </div>
+  </div>
+</div>
+`;

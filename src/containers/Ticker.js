@@ -35,7 +35,7 @@ const Value = styled.p`
   white-space: nowrap;
 `;
 
-class Ticker extends React.Component {
+export class Ticker extends React.Component {
   componentDidMount() {
     document.title = 'BTC-USD | Beachfinex';
     this.ws = new WebSocket('wss://api.bitfinex.com/ws/2');
