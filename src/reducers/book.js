@@ -76,7 +76,7 @@ const book = (state = initialState, action) => {
         : state[side].set(price, action.order);
       return {
         ...state,
-        [side]: updatedBook,
+        [side]: sortBook(side, updatedBook),
         [`${side}Total`]: sumBook(updatedBook),
       };
     }

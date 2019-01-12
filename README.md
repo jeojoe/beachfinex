@@ -12,6 +12,7 @@ Order Book, Ticker and Trades are implemented according to the challenge and Bit
   yarn start
   ```
 ## Defects
+1. **(Critical defect. Fixed but overtime)** Unsorted order book on update action.
 1. Daily change in percentage is wrongly displayed (must be multiplied by 100).
 1. First depth bar's width sometime gets too small and is calculated to 0. So scaling has no effect on it (scale * 0 = 0).
 
