@@ -25,6 +25,7 @@ Order Book, Ticker and Trades are implemented according to the challenge and Bit
 1. Better loading state and indicator.
 1. Cleaner HTML and decision tree code.
 1. Remove unused redux middleware (thunk).
+1. Unit tests on all reducers. Some snapshot tests on components and containers using Enzyme.
 
 ## Libs
 1. React & Redux
