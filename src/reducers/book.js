@@ -72,8 +72,7 @@ const book = (state = initialState, action) => {
     case UPDATE_BOOK: {
       const [price, count, amount] = action.order;
       const side = amount >= 0 ? 'bids' : 'asks';
-      const isDelete = count === 0;
-      const updatedBook = isDelete
+      const updatedBook = count === 0
         ? state[side].delete(price)
         : state[side].set(price, action.order);
       return {
