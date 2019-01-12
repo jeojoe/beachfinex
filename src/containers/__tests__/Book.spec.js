@@ -5,7 +5,7 @@ import { Map } from 'immutable';
 
 import { Book } from '../Book';
 
-describe('<App />', () => {
+describe('<Book />', () => {
   it('renders correctly', () => {
     const initBook = jest.fn();
     const updateBook = jest.fn();
