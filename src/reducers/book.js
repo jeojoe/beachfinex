@@ -25,13 +25,13 @@ export const actionCreators = {
   updateBook,
 };
 
-// Reducer
+// Helpers
 
-function toIterable(order) {
+export function toIterable(order) {
   return [order[0], order];
 }
 
-function sortBook(side, book) {
+export function sortBook(side, book) {
   return book.sort(
     ([priceA], [priceB]) => (
       side === 'bids' ? priceB - priceA : priceA - priceB
@@ -39,15 +39,17 @@ function sortBook(side, book) {
   );
 }
 
-function sumBook(book) {
+export function sumBook(book) {
   return book.reduce((acc, order) => acc + order[2], 0);
 }
 
+// Reducer
+
 const initialState = {
   bids: null,
-  totalBids: 0,
+  bidsTotal: 0,
   asks: null,
-  totalAsks: 0,
+  asksTotal: 0,
 };
 
 const book = (state = initialState, action) => {
