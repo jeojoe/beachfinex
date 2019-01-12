@@ -19,7 +19,7 @@ const TradeRow = styled(HeaderRow)`
   }
 `;
 
-class Trades extends React.Component {
+export class Trades extends React.Component {
   state = {
     subscribed: false,
     subscribing: true,
