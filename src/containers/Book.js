@@ -15,7 +15,7 @@ const ActionRow = styled.div`
   padding: 10px 0 0;
 `;
 
-class Book extends React.Component {
+export class Book extends React.Component {
   state = {
     subscribed: false,
     subscribing: true,
