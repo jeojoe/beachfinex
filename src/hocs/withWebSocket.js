@@ -16,9 +16,12 @@ function withWebSocket(Component) {
       actions: null,
     }
 
-    subscribe = ({ newOpenMsg, newOnMessage } = {}) => {
+    subscribe = ({ newOpenMsg, newOnMessage, newActions } = {}) => {
+      // New settings
       if (newOpenMsg) this.openMsg = newOpenMsg;
       if (newOnMessage) this.onMessage = newOnMessage;
+      if (newActions) this.setState({ actions: newActions });
+      // New WS instance
       this.ws = new WebSocket('wss://api.bitfinex.com/ws/2');
       this.ws.onopen = this.onOpen;
       this.ws.onmessage = this.onMessage;
@@ -48,8 +51,6 @@ function withWebSocket(Component) {
         this.subscribe();
       }
     }
-
-    setMoreActions = actions => this.setState({ actions });
 
     setSubscribed = () => this.setState({
       subscribed: true,
@@ -91,7 +92,6 @@ function withWebSocket(Component) {
               subscribe: this.subscribe,
               unsubscribe: this.unsubscribe,
               toggle: this.toggle,
-              setMoreActions: this.setMoreActions,
             }}
           />
           {this.renderActions()}
@@ -108,7 +108,6 @@ export const propTypesWS = {
   subscribe: PropTypes.func.isRequired,
   unsubscribe: PropTypes.func.isRequired,
   toggle: PropTypes.func.isRequired,
-  setMoreActions: PropTypes.func.isRequired,
 };
 
 export default withWebSocket;

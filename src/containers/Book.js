@@ -27,8 +27,8 @@ export class Book extends React.Component {
     ws.subscribe({
       newOpenMsg: getOpenMsg('P0'),
       newOnMessage: this.onMessage,
+      newActions: this.getActions('P0'),
     });
-    ws.setMoreActions(this.getActions('P0'));
   }
 
   onMessage = (msg) => {
@@ -53,8 +53,10 @@ export class Book extends React.Component {
     const { ws } = this.props;
     if (precision !== current) {
       if (ws.subscribed) ws.unsubscribe();
-      ws.subscribe({ newOpenMsg: getOpenMsg(precision) });
-      ws.setMoreActions(this.getActions(precision));
+      ws.subscribe({
+        newOpenMsg: getOpenMsg(precision),
+        newActions: this.getActions(precision),
+      });
     }
   }
 
