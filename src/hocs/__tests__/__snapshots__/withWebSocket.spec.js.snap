@@ -1,0 +1,28 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`withWebSocket() enhances input component correctly 1`] = `
+<div>
+  <cmp
+    ws={
+      Object {
+        "setMoreActions": [Function],
+        "setSubscribed": [Function],
+        "subscribe": [Function],
+        "subscribed": false,
+        "subscribing": true,
+        "toggle": [Function],
+        "unsubscribe": [Function],
+      }
+    }
+  />
+  <styled.div>
+    <div>
+      <b>
+        OFFLINE
+      </b>
+       
+      (Subscribing..)
+    </div>
+  </styled.div>
+</div>
+`;
