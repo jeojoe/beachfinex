@@ -8,9 +8,9 @@ import BigNumber from 'bignumber.js';
 import { actionCreators } from '../reducers/book';
 import HeaderRow from '../components/HeaderRow';
 import BookRow from '../components/BookRow';
+import BookAction from '../components/BookAction';
 import withWebSocket, { propTypesWS } from '../hocs/withWebSocket';
 
-const precisions = ['P0', 'P1', 'P2', 'P3'];
 const getOpenMsg = precision => ({
   event: 'subscribe',
   channel: 'book',
@@ -60,34 +60,7 @@ export class Book extends React.Component {
     }
   }
 
-  getActionRow = (precision) => {
-    const { zoomIn, zoomOut } = this.props;
-    return (
-      <>
-        <div>
-          {precisions.map(prec => (
-            <button
-              onClick={() => this.changePrecision(prec)}
-              type="button"
-              key={prec}
-            >
-              {prec}
-            </button>
-          ))}
-          {' '}
-          <b>Current Precision: {precision}</b>
-        </div>
-        <div>
-          <button onClick={zoomIn} type="button">
-            Zoom In +
-          </button>
-          <button onClick={zoomOut} type="button">
-            Zoom out -
-          </button>
-        </div>
-      </>
-    );
-  }
+  getActionRow = precision => <BookAction precision={precision} />
 
   renderRow(side) {
     const { total, zoom } = this.props;
@@ -148,8 +121,6 @@ Book.propTypes = {
   updateBook: PropTypes.func.isRequired,
   total: PropTypes.instanceOf(BigNumber).isRequired,
   ws: PropTypes.shape(propTypesWS).isRequired,
-  zoomIn: PropTypes.func.isRequired,
-  zoomOut: PropTypes.func.isRequired,
   zoom: PropTypes.number.isRequired,
 };
 
@@ -168,8 +139,6 @@ function mapDispatchToProps(dispatch) {
   return {
     initBook: orders => dispatch(actionCreators.initBook(orders)),
     updateBook: order => dispatch(actionCreators.updateBook(order)),
-    zoomIn: () => dispatch(actionCreators.zoomIn()),
-    zoomOut: () => dispatch(actionCreators.zoomOut()),
   };
 }
 
