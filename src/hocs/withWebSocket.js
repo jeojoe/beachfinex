@@ -91,7 +91,6 @@ function withWebSocket(Component) {
               setSubscribed: this.setSubscribed,
               subscribe: this.subscribe,
               unsubscribe: this.unsubscribe,
-              toggle: this.toggle,
             }}
           />
           {this.renderActions()}
@@ -107,7 +106,6 @@ export const propTypesWS = {
   setSubscribed: PropTypes.func.isRequired,
   subscribe: PropTypes.func.isRequired,
   unsubscribe: PropTypes.func.isRequired,
-  toggle: PropTypes.func.isRequired,
 };
 
 export default withWebSocket;
