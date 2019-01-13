@@ -24,7 +24,21 @@ class Book extends React.Component {
   };
 
   componentDidMount() {
+    this.lastRendered = Date.now();
     this.subscribe();
+  }
+
+  shouldComponentUpdate(nextProps, nextState) {
+    if (this.state !== nextState) return true;
+    // Only 1 render per 0.25s
+    const now = Date.now();
+    const timeOk = now - this.lastRendered > 250;
+    const bookFull = nextProps.bids && nextProps.bids.size === 25 && nextProps.asks.size === 25;
+    if (bookFull && timeOk) {
+      this.lastRendered = now;
+      return true;
+    }
+    return false;
   }
 
   subscribe = () => {

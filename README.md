@@ -17,9 +17,9 @@ Order Book, Ticker and Trades are implemented according to the challenge and Bit
 1. First depth bar's width sometime gets too small and is calculated to 0. So scaling has no effect on it (scale * 0 = 0).
 
 ## Can Be Improved
-1. Performance optimization for better framerates.
+1. Performance optimization on Order Book (Implemented for ease of inspection).
 1. Higher order component to recycle repeated WebSocket code in Book, Trades and Ticker containers.
-1. Move `subscribing`, `subscribed` states of Book, Trades to its corresponding reducer. And 
+1. Move `subscribing`, `subscribed` states of Book, Trades to its corresponding reducer.
 1. Recyclable action rows and better UX for order book actions UI.
 1. Recyclable styled components.
 1. Better component separation and encapsulation (e.g. more clarity on props passed to BookRow).
