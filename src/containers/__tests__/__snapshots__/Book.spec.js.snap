@@ -114,7 +114,6 @@ exports[`<Book /> renders correctly 1`] = `
     />
     <Connect(BookAction)
       changePrecision={[Function]}
-      precision="P0"
     />
   </styled.div>
 </div>

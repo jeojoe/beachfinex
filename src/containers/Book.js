@@ -21,10 +21,6 @@ const getOpenMsg = precision => ({
 });
 
 export class Book extends React.Component {
-  state = {
-    precision: 'P0',
-  }
-
   componentDidMount() {
     const { ws } = this.props;
     ws.subscribe({
@@ -50,13 +46,13 @@ export class Book extends React.Component {
     }
   }
 
-  changePrecision = (precision) => {
-    const { ws } = this.props;
-    if (precision !== this.precision) {
+  changePrecision = (prec) => {
+    const { ws, precision: prevPrec, setPrecision } = this.props;
+    if (prec !== prevPrec) {
       if (ws.subscribed) ws.unsubscribe();
-      ws.subscribe({ newOpenMsg: getOpenMsg(precision) });
+      ws.subscribe({ newOpenMsg: getOpenMsg(prec) });
       // Save precision
-      this.setState({ precision });
+      setPrecision(prec);
     }
   }
 
@@ -87,8 +83,7 @@ export class Book extends React.Component {
   }
 
   renderControl() {
-    const { precision } = this.state;
-    const { ws } = this.props;
+    const { ws, precision } = this.props;
     return (
       <ControlRow>
         <WSAction
@@ -141,12 +136,17 @@ Book.propTypes = {
   total: PropTypes.instanceOf(BigNumber).isRequired,
   ws: PropTypes.shape(propTypesWS).isRequired,
   zoom: PropTypes.number.isRequired,
+  precision: PropTypes.oneOfType(
+    ['P0', 'P1', 'P2', 'P3'],
+  ).isRequired,
+  setPrecision: PropTypes.func.isRequired,
 };
 
 function mapStateToProps(state) {
   return {
     bids: state.book.bids,
     asks: state.book.asks,
+    precision: state.book.precision,
     zoom: state.book.zoom,
     total: (new BigNumber(state.book.asksTotal))
       .abs()
@@ -158,6 +158,7 @@ function mapDispatchToProps(dispatch) {
   return {
     initBook: orders => dispatch(actionCreators.initBook(orders)),
     updateBook: order => dispatch(actionCreators.updateBook(order)),
+    setPrecision: prec => dispatch(actionCreators.setPrecision(prec)),
   };
 }
 

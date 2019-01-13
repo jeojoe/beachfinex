@@ -5,6 +5,7 @@ import book, {
   UPDATE_BOOK,
   ZOOM_IN,
   ZOOM_OUT,
+  SET_PRECISION,
   actionCreators,
   toIterable,
   sortBook,
@@ -26,6 +27,10 @@ describe('Book action types', () => {
 
   it('has correct ZOOM_OUT type', () => {
     expect(ZOOM_OUT).toBe('ZOOM_OUT');
+  });
+
+  it('has correct SET_PRECISION type', () => {
+    expect(SET_PRECISION).toBe('SET_PRECISION');
   });
 });
 
@@ -57,6 +62,14 @@ describe('Book action creators', () => {
     const created = actionCreators.zoomOut();
     expect(created).toEqual({
       type: 'ZOOM_OUT',
+    });
+  });
+
+  it('creates correct setPrecision action', () => {
+    const created = actionCreators.setPrecision('test');
+    expect(created).toEqual({
+      type: 'SET_PRECISION',
+      precision: 'test',
     });
   });
 });
@@ -103,6 +116,7 @@ describe('Book reducer', () => {
       asks: null,
       asksTotal: 0,
       zoom: 1,
+      precision: 'P0',
     });
   });
 
@@ -129,6 +143,7 @@ describe('Book reducer', () => {
       ]),
       asksTotal: -2,
       zoom: 1,
+      precision: 'P0',
     });
   });
 
@@ -173,6 +188,7 @@ describe('Book reducer', () => {
       asks: null,
       asksTotal: 0,
       zoom: 1.1,
+      precision: 'P0',
     });
     // Edge case
     const state = { zoom: 3 };
@@ -189,10 +205,23 @@ describe('Book reducer', () => {
       asks: null,
       asksTotal: 0,
       zoom: 0.9,
+      precision: 'P0',
     });
     // Edge case
     const state = { zoom: 0.3 };
     const reducedEdge = book(state, action);
     expect(reducedEdge).toEqual({ zoom: 0.3 });
+  });
+
+  it('reduces SET_PRECISION action correctly', () => {
+    const state = {
+      precision: 'P0',
+    };
+    const action = {
+      type: 'SET_PRECISION',
+      precision: 'P1',
+    };
+    const reduced = book(state, action);
+    expect(reduced).toEqual({ precision: 'P1' });
   });
 });

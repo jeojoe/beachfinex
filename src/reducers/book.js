@@ -6,6 +6,7 @@ export const INIT_BOOK = 'INIT_BOOK';
 export const UPDATE_BOOK = 'UPDATE_BOOK';
 export const ZOOM_IN = 'ZOOM_IN';
 export const ZOOM_OUT = 'ZOOM_OUT';
+export const SET_PRECISION = 'SET_PRECISION';
 
 // Action creators
 
@@ -27,12 +28,19 @@ function zoomIn() {
 function zoomOut() {
   return { type: ZOOM_OUT };
 }
+function setPrecision(precision) {
+  return {
+    type: SET_PRECISION,
+    precision,
+  };
+}
 
 export const actionCreators = {
   initBook,
   updateBook,
   zoomIn,
   zoomOut,
+  setPrecision,
 };
 
 // Helpers
@@ -61,6 +69,7 @@ const initialState = {
   asks: null,
   asksTotal: 0,
   zoom: 1,
+  precision: 'P0',
 };
 
 const book = (state = initialState, action) => {
@@ -105,6 +114,12 @@ const book = (state = initialState, action) => {
       return {
         ...state,
         zoom: state.zoom - 0.1,
+      };
+    }
+    case SET_PRECISION: {
+      return {
+        ...state,
+        precision: action.precision,
       };
     }
     default: {
