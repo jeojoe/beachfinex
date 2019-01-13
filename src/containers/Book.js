@@ -10,7 +10,6 @@ import BookRow from '../components/BookRow';
 import withWebSocket, { propTypesWS } from '../hocs/withWebSocket';
 
 const precisions = ['P0', 'P1', 'P2', 'P3'];
-
 const getOpenMsg = precision => ({
   event: 'subscribe',
   channel: 'book',
@@ -29,7 +28,7 @@ export class Book extends React.Component {
       newOpenMsg: getOpenMsg('P0'),
       newOnMessage: this.onMessage,
     });
-    ws.setMoreActions(this.getActions());
+    ws.setMoreActions(this.getActions('P0'));
   }
 
   onMessage = (msg) => {
@@ -55,6 +54,7 @@ export class Book extends React.Component {
     if (precision !== current) {
       if (ws.subscribed) ws.unsubscribe();
       ws.subscribe({ newOpenMsg: getOpenMsg(precision) });
+      ws.setMoreActions(this.getActions(precision));
     }
   }
 
@@ -66,34 +66,31 @@ export class Book extends React.Component {
     zoom: prev.zoom > 0.3 ? prev.zoom - 0.1 : prev.zoom,
   }))
 
-  getActions = () => {
-    const { precision } = this.state;
-    return (
-      <>
-        <div>
-          {precisions.map(prec => (
-            <button
-              onClick={() => this.changePrecision(prec)}
-              type="button"
-              key={prec}
-            >
-              {prec}
-            </button>
-          ))}
-          {' '}
-          <b>Current Precision: {precision}</b>
-        </div>
-        <div>
-          <button onClick={this.zoomIn} type="button">
-            Zoom In +
+  getActions = precision => (
+    <>
+      <div>
+        {precisions.map(prec => (
+          <button
+            onClick={() => this.changePrecision(prec)}
+            type="button"
+            key={prec}
+          >
+            {prec}
           </button>
-          <button onClick={this.zoomOut} type="button">
-            Zoom out -
-          </button>
-        </div>
-      </>
-    );
-  }
+        ))}
+        {' '}
+        <b>Current Precision: {precision}</b>
+      </div>
+      <div>
+        <button onClick={this.zoomIn} type="button">
+          Zoom In +
+        </button>
+        <button onClick={this.zoomOut} type="button">
+          Zoom out -
+        </button>
+      </div>
+    </>
+  )
 
   renderRow(side) {
     const { total } = this.props;
