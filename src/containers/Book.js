@@ -18,6 +18,8 @@ const getOpenMsg = precision => ({
 });
 
 export class Book extends React.Component {
+  precision = 'P0';
+
   componentDidMount() {
     const { ws } = this.props;
     ws.subscribe({
@@ -45,14 +47,15 @@ export class Book extends React.Component {
   }
 
   changePrecision = (precision) => {
-    const { precision: current } = this.state;
     const { ws } = this.props;
-    if (precision !== current) {
+    if (precision !== this.precision) {
       if (ws.subscribed) ws.unsubscribe();
       ws.subscribe({
         newOpenMsg: getOpenMsg(precision),
         newActionRow: this.getActionRow(precision),
       });
+      // Save
+      this.precision = precision;
     }
   }
 
