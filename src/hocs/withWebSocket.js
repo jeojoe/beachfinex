@@ -68,7 +68,7 @@ function withWebSocket(Component) {
               ? '(Subscribing..)'
               : (
                 <button onClick={this.toggle} type="button">
-                  {subscribed ? 'Unsubscribe' : 'Subscribe'} Order Book
+                  {subscribed ? 'Unsubscribe' : 'Subscribe'}
                 </button>
               )
             }

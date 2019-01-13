@@ -5,7 +5,6 @@ exports[`withWebSocket() enhances input component correctly 1`] = `
   <cmp
     ws={
       Object {
-        "setMoreActions": [Function],
         "setSubscribed": [Function],
         "subscribe": [Function],
         "subscribed": false,
