@@ -101,7 +101,9 @@ function mapDispatchToProps(dispatch) {
   };
 }
 
-export default compose(
+const enhance = compose(
   connect(mapStateToProps, mapDispatchToProps),
   withWebSocket,
-)(Trades);
+);
+
+export default enhance(Trades);
