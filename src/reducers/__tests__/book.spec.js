@@ -3,6 +3,8 @@ import { Map, OrderedMap } from 'immutable';
 import book, {
   INIT_BOOK,
   UPDATE_BOOK,
+  ZOOM_IN,
+  ZOOM_OUT,
   actionCreators,
   toIterable,
   sortBook,
@@ -16,6 +18,14 @@ describe('Book action types', () => {
 
   it('has correct UPDATE_BOOK type', () => {
     expect(UPDATE_BOOK).toBe('UPDATE_BOOK');
+  });
+
+  it('has correct ZOOM_IN type', () => {
+    expect(ZOOM_IN).toBe('ZOOM_IN');
+  });
+
+  it('has correct ZOOM_OUT type', () => {
+    expect(ZOOM_OUT).toBe('ZOOM_OUT');
   });
 });
 
@@ -33,6 +43,20 @@ describe('Book action creators', () => {
     expect(created).toEqual({
       type: 'UPDATE_BOOK',
       order: 'test',
+    });
+  });
+
+  it('creates correct zoomIn action', () => {
+    const created = actionCreators.zoomIn();
+    expect(created).toEqual({
+      type: 'ZOOM_IN',
+    });
+  });
+
+  it('creates correct zoomOut action', () => {
+    const created = actionCreators.zoomOut();
+    expect(created).toEqual({
+      type: 'ZOOM_OUT',
     });
   });
 });
@@ -78,6 +102,7 @@ describe('Book reducer', () => {
       bidsTotal: 0,
       asks: null,
       asksTotal: 0,
+      zoom: 1,
     });
   });
 
@@ -136,5 +161,37 @@ describe('Book reducer', () => {
       ]),
       asksTotal: -3,
     });
+  });
+
+  it('reduces ZOOM_IN action correctly', () => {
+    const action = { type: 'ZOOM_IN' };
+    const reduced = book(undefined, action);
+    expect(reduced).toEqual({
+      bids: null,
+      bidsTotal: 0,
+      asks: null,
+      asksTotal: 0,
+      zoom: 1.1,
+    });
+    // Edge case
+    const state = { zoom: 3 };
+    const reducedEdge = book(state, action);
+    expect(reducedEdge).toEqual({ zoom: 3 });
+  });
+
+  it('reduces ZOOM_OUT action correctly', () => {
+    const action = { type: 'ZOOM_OUT' };
+    const reduced = book(undefined, action);
+    expect(reduced).toEqual({
+      bids: null,
+      bidsTotal: 0,
+      asks: null,
+      asksTotal: 0,
+      zoom: 0.9,
+    });
+    // Edge case
+    const state = { zoom: 0.3 };
+    const reducedEdge = book(state, action);
+    expect(reducedEdge).toEqual({ zoom: 0.3 });
   });
 });

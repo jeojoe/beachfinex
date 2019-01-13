@@ -4,6 +4,8 @@ import { Map } from 'immutable';
 
 export const INIT_BOOK = 'INIT_BOOK';
 export const UPDATE_BOOK = 'UPDATE_BOOK';
+export const ZOOM_IN = 'ZOOM_IN';
+export const ZOOM_OUT = 'ZOOM_OUT';
 
 // Action creators
 
@@ -19,10 +21,18 @@ function updateBook(order) {
     order,
   };
 }
+function zoomIn() {
+  return { type: ZOOM_IN };
+}
+function zoomOut() {
+  return { type: ZOOM_OUT };
+}
 
 export const actionCreators = {
   initBook,
   updateBook,
+  zoomIn,
+  zoomOut,
 };
 
 // Helpers
@@ -50,6 +60,7 @@ const initialState = {
   bidsTotal: 0,
   asks: null,
   asksTotal: 0,
+  zoom: 1,
 };
 
 const book = (state = initialState, action) => {
@@ -79,6 +90,20 @@ const book = (state = initialState, action) => {
         ...state,
         [side]: sortBook(side, updatedBook),
         [`${side}Total`]: sumBook(updatedBook),
+      };
+    }
+    case ZOOM_IN: {
+      if (state.zoom >= 3) return state;
+      return {
+        ...state,
+        zoom: state.zoom + 0.1,
+      };
+    }
+    case ZOOM_OUT: {
+      if (state.zoom <= 0.3) return state;
+      return {
+        ...state,
+        zoom: state.zoom - 0.1,
       };
     }
     default: {
