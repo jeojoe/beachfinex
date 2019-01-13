@@ -1,108 +1,121 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`<Book /> renders correctly 1`] = `
-<div
-  className="row"
->
+<div>
   <div
-    className="col-1"
+    className="row"
   >
-    <styled.div
-      side="bids"
+    <div
+      className="col-1"
     >
-      <p
-        className="count"
+      <styled.div
+        side="bids"
       >
-        Count
-      </p>
-      <p>
-        Amount
-      </p>
-      <p>
-        Total
-      </p>
-      <p
-        className="price"
-      >
-        Price
-      </p>
-    </styled.div>
-    <BookRow
-      acc={"1"}
-      key="11"
-      order={
-        Array [
-          1,
-          1,
-          1,
-        ]
-      }
-      percent="NaN"
-      side="bids"
-    />
-    <BookRow
-      acc={"2"}
-      key="21"
-      order={
-        Array [
-          2,
-          1,
-          1,
-        ]
-      }
-      percent="NaN"
-      side="bids"
-    />
-  </div>
-  <div
-    className="col-1"
-  >
-    <styled.div
-      side="asks"
+        <p
+          className="count"
+        >
+          Count
+        </p>
+        <p>
+          Amount
+        </p>
+        <p>
+          Total
+        </p>
+        <p
+          className="price"
+        >
+          Price
+        </p>
+      </styled.div>
+      <BookRow
+        acc={"1"}
+        key="11"
+        order={
+          Array [
+            1,
+            1,
+            1,
+          ]
+        }
+        percent="NaN"
+        side="bids"
+      />
+      <BookRow
+        acc={"2"}
+        key="21"
+        order={
+          Array [
+            2,
+            1,
+            1,
+          ]
+        }
+        percent="NaN"
+        side="bids"
+      />
+    </div>
+    <div
+      className="col-1"
     >
-      <p
-        className="price"
+      <styled.div
+        side="asks"
       >
-        Price
-      </p>
-      <p>
-        Amount
-      </p>
-      <p>
-        Total
-      </p>
-      <p
-        className="count"
-      >
-        Count
-      </p>
-    </styled.div>
-    <BookRow
-      acc={"-1"}
-      key="1-1"
-      order={
-        Array [
-          1,
-          1,
-          -1,
-        ]
-      }
-      percent="NaN"
-      side="asks"
-    />
-    <BookRow
-      acc={"-2"}
-      key="2-1"
-      order={
-        Array [
-          2,
-          1,
-          -1,
-        ]
-      }
-      percent="NaN"
-      side="asks"
-    />
+        <p
+          className="price"
+        >
+          Price
+        </p>
+        <p>
+          Amount
+        </p>
+        <p>
+          Total
+        </p>
+        <p
+          className="count"
+        >
+          Count
+        </p>
+      </styled.div>
+      <BookRow
+        acc={"-1"}
+        key="1-1"
+        order={
+          Array [
+            1,
+            1,
+            -1,
+          ]
+        }
+        percent="NaN"
+        side="asks"
+      />
+      <BookRow
+        acc={"-2"}
+        key="2-1"
+        order={
+          Array [
+            2,
+            1,
+            -1,
+          ]
+        }
+        percent="NaN"
+        side="asks"
+      />
+    </div>
   </div>
+  <styled.div>
+    <WSAction
+      subscribed={false}
+      subscribing={true}
+      toggle={[MockFunction]}
+    />
+    <Connect(BookAction)
+      changePrecision={[Function]}
+      precision="P0"
+    />
+  </styled.div>
 </div>
 `;

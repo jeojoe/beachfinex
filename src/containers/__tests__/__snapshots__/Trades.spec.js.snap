@@ -16,5 +16,12 @@ exports[`<Trades /> renders correctly 1`] = `
   <div>
     Fetching..
   </div>
+  <styled.div>
+    <WSAction
+      subscribed={false}
+      subscribing={true}
+      toggle={[MockFunction]}
+    />
+  </styled.div>
 </div>
 `;
