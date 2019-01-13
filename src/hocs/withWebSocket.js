@@ -44,13 +44,7 @@ function withWebSocket(Component) {
       }
     }
 
-    toggle = () => {
-      if (this.ws) {
-        this.unsubscribe();
-      } else {
-        this.subscribe();
-      }
-    }
+    toggle = () => (this.ws ? this.unsubscribe() : this.subscribe())
 
     setSubscribed = () => this.setState({
       subscribed: true,
@@ -67,7 +61,10 @@ function withWebSocket(Component) {
             {subscribing
               ? '(Subscribing..)'
               : (
-                <button onClick={this.toggle} type="button">
+                <button
+                  onClick={this.toggle}
+                  type="button"
+                >
                   {subscribed ? 'Unsubscribe' : 'Subscribe'}
                 </button>
               )
