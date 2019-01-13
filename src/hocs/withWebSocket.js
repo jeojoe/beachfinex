@@ -2,6 +2,8 @@ import React from 'react';
 import styled from 'styled-components';
 import PropTypes from 'prop-types';
 
+import WSAction from '../components/WSAction';
+
 const ActionRow = styled.div`
   display: flex;
   justify-content: space-between;
@@ -17,11 +19,9 @@ function withWebSocket(Component) {
     }
 
     subscribe = ({ newOpenMsg, newOnMessage, newActionRow } = {}) => {
-      // New settings
       if (newOpenMsg) this.openMsg = newOpenMsg;
       if (newOnMessage) this.onMessage = newOnMessage;
-      if (newActionRow) this.setState({ actions: newActionRow });
-      // New WS instance
+      if (newActionRow) this.setState({ actionRow: newActionRow });
       this.ws = new WebSocket('wss://api.bitfinex.com/ws/2');
       this.ws.onopen = this.onOpen;
       this.ws.onmessage = this.onMessage;
@@ -52,25 +52,15 @@ function withWebSocket(Component) {
     });
 
     renderActions() {
-      const { subscribed, subscribing, actions } = this.state;
+      const { subscribed, subscribing, actionRow } = this.state;
       return (
         <ActionRow>
-          <div>
-            <b>{subscribed ? 'REAL-TIME' : 'OFFLINE' }</b>
-            {' '}
-            {subscribing
-              ? '(Subscribing..)'
-              : (
-                <button
-                  onClick={this.toggle}
-                  type="button"
-                >
-                  {subscribed ? 'Unsubscribe' : 'Subscribe'}
-                </button>
-              )
-            }
-          </div>
-          {actions}
+          <WSAction
+            subscribed={subscribed}
+            subscribing={subscribing}
+            toggle={this.toggle}
+          />
+          {actionRow}
         </ActionRow>
       );
     }
