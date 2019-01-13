@@ -27,7 +27,7 @@ export class Book extends React.Component {
     ws.subscribe({
       newOpenMsg: getOpenMsg('P0'),
       newOnMessage: this.onMessage,
-      newActions: this.getActions('P0'),
+      newActionRow: this.getActionRow('P0'),
     });
   }
 
@@ -55,7 +55,7 @@ export class Book extends React.Component {
       if (ws.subscribed) ws.unsubscribe();
       ws.subscribe({
         newOpenMsg: getOpenMsg(precision),
-        newActions: this.getActions(precision),
+        newActionRow: this.getActionRow(precision),
       });
     }
   }
@@ -68,7 +68,7 @@ export class Book extends React.Component {
     zoom: prev.zoom > 0.3 ? prev.zoom - 0.1 : prev.zoom,
   }))
 
-  getActions = precision => (
+  getActionRow = precision => (
     <>
       <div>
         {precisions.map(prec => (

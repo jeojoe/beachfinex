@@ -13,14 +13,14 @@ function withWebSocket(Component) {
     state = {
       subscribed: false,
       subscribing: true,
-      actions: null,
+      actionRow: null,
     }
 
-    subscribe = ({ newOpenMsg, newOnMessage, newActions } = {}) => {
+    subscribe = ({ newOpenMsg, newOnMessage, newActionRow } = {}) => {
       // New settings
       if (newOpenMsg) this.openMsg = newOpenMsg;
       if (newOnMessage) this.onMessage = newOnMessage;
-      if (newActions) this.setState({ actions: newActions });
+      if (newActionRow) this.setState({ actions: newActionRow });
       // New WS instance
       this.ws = new WebSocket('wss://api.bitfinex.com/ws/2');
       this.ws.onopen = this.onOpen;
