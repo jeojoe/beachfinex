@@ -22,6 +22,15 @@ describe('<Ticker />', () => {
       <Ticker
         ticker={ticker}
         setTicker={setTicker}
+        ws={{
+          subscribed: false,
+          subscribing: true,
+          setSubscribed: jest.fn(),
+          subscribe: jest.fn(),
+          unsubscribe: jest.fn(),
+          toggle: jest.fn(),
+          setMoreActions: jest.fn(),
+        }}
       />,
     );
     expect(wrapped).toMatchSnapshot();

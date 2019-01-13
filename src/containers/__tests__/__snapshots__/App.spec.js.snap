@@ -6,7 +6,7 @@ exports[`<App /> renders correctly 1`] = `
     Beachfinex
   </styled.h1>
   <styled.div>
-    <Connect(Ticker) />
+    <WithWebSocket />
   </styled.div>
   <div
     className="row"

@@ -4,6 +4,8 @@ import { connect } from 'react-redux';
 import styled from 'styled-components';
 
 import { actionCreators } from '../reducers/ticker';
+import withWebSocket, { propTypesWS } from '../hocs/withWebSocket';
+
 import BTC from '../images/BTC.png';
 
 const Logo = styled.img`
@@ -35,32 +37,33 @@ const Value = styled.p`
   white-space: nowrap;
 `;
 
+const getOpenMsg = () => ({
+  event: 'subscribe',
+  channel: 'ticker',
+  symbol: 'tBTCUSD',
+});
+
 export class Ticker extends React.Component {
   componentDidMount() {
-    this.ws = new WebSocket('wss://api.bitfinex.com/ws/2');
-    this.ws.onopen = this.onOpen;
-    this.ws.onmessage = this.onMessage;
-    this.ws.onerror = this.onError;
-  }
-
-  onOpen = () => {
-    const openMsg = JSON.stringify({
-      event: 'subscribe',
-      channel: 'ticker',
-      symbol: 'tBTCUSD',
+    const { ws } = this.props;
+    ws.subscribe({
+      newOpenMsg: getOpenMsg(),
+      newOnMessage: this.onMessage,
     });
-    this.ws.send(openMsg);
   }
 
   onMessage = (msg) => {
-    const { setTicker } = this.props;
-    const data = JSON.parse(msg.data)[1];
+    const { setTicker, ws } = this.props;
+    const parsed = JSON.parse(msg.data);
+    if (parsed.event === 'subscribed') {
+      ws.setSubscribed();
+      return;
+    }
+    const data = parsed[1];
     if (data && data !== 'hb') {
       setTicker(data);
     }
   }
-
-  onError = err => console.log(err);
 
   render() {
     const {
@@ -129,6 +132,7 @@ Ticker.propTypes = {
     low: PropTypes.number,
   }).isRequired,
   setTicker: PropTypes.func.isRequired,
+  ws: PropTypes.shape(propTypesWS).isRequired,
 };
 
 function mapStateToProps(state) {
@@ -143,4 +147,4 @@ function mapDispatchToProps(dispatch) {
   };
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(Ticker);
+export default withWebSocket(connect(mapStateToProps, mapDispatchToProps)(Ticker));

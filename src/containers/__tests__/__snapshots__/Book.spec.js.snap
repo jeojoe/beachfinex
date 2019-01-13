@@ -37,7 +37,7 @@ exports[`<Book /> renders correctly 1`] = `
           1,
         ]
       }
-      percent="25"
+      percent="NaN"
       side="bids"
     />
     <BookRow
@@ -50,7 +50,7 @@ exports[`<Book /> renders correctly 1`] = `
           1,
         ]
       }
-      percent="50"
+      percent="NaN"
       side="bids"
     />
   </div>
@@ -87,7 +87,7 @@ exports[`<Book /> renders correctly 1`] = `
           -1,
         ]
       }
-      percent="25"
+      percent="NaN"
       side="asks"
     />
     <BookRow
@@ -100,7 +100,7 @@ exports[`<Book /> renders correctly 1`] = `
           -1,
         ]
       }
-      percent="50"
+      percent="NaN"
       side="asks"
     />
   </div>
