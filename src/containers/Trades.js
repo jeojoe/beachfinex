@@ -1,4 +1,5 @@
 import React from 'react';
+import { compose } from 'redux';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { List } from 'immutable';
@@ -100,4 +101,7 @@ function mapDispatchToProps(dispatch) {
   };
 }
 
-export default withWebSocket(connect(mapStateToProps, mapDispatchToProps)(Trades));
+export default compose(
+  connect(mapStateToProps, mapDispatchToProps),
+  withWebSocket,
+)(Trades);

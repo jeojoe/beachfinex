@@ -1,4 +1,5 @@
 import React from 'react';
+import { compose } from 'redux';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { Map } from 'immutable';
@@ -172,4 +173,7 @@ function mapDispatchToProps(dispatch) {
   };
 }
 
-export default withWebSocket(connect(mapStateToProps, mapDispatchToProps)(Book));
+export default compose(
+  connect(mapStateToProps, mapDispatchToProps),
+  withWebSocket,
+)(Book);

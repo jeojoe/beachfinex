@@ -1,4 +1,5 @@
 import React from 'react';
+import { compose } from 'redux';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import styled from 'styled-components';
@@ -147,4 +148,7 @@ function mapDispatchToProps(dispatch) {
   };
 }
 
-export default withWebSocket(connect(mapStateToProps, mapDispatchToProps)(Ticker));
+export default compose(
+  connect(mapStateToProps, mapDispatchToProps),
+  withWebSocket,
+)(Ticker);
