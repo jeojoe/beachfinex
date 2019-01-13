@@ -21,12 +21,30 @@ const getOpenMsg = precision => ({
 });
 
 export class Book extends React.Component {
+  lastRendered = Date.now();
+
   componentDidMount() {
     const { ws } = this.props;
     ws.subscribe({
       newOpenMsg: getOpenMsg('P0'),
       newOnMessage: this.onMessage,
     });
+  }
+
+  shouldComponentUpdate(nextProps) {
+    const { precision, zoom, ws } = this.props;
+    if (precision !== nextProps.precision) return true;
+    if (zoom !== nextProps.zoom) return true;
+    if (ws.subscribed !== nextProps.ws.subscribed) return true;
+    if (ws.subscribing !== nextProps.ws.subscribing) return true;
+    const now = Date.now();
+    const timeOk = now - this.lastRendered > 500;
+    const bookFull = nextProps.bids && nextProps.bids.size === 25 && nextProps.asks.size === 25;
+    if (bookFull && timeOk) {
+      this.lastRendered = now;
+      return true;
+    }
+    return false;
   }
 
   onMessage = (msg) => {
@@ -63,7 +81,7 @@ export class Book extends React.Component {
 
     let acc = new BigNumber(0);
     return book.toArray().map(([, order]) => {
-      const [price, , amount] = order;
+      const [price, count, amount] = order;
       acc = acc.plus(amount);
       const percent = acc.abs().dividedBy(total)
         .times(100)
@@ -73,8 +91,10 @@ export class Book extends React.Component {
         <BookRow
           key={`${price}${amount}`}
           side={side}
-          order={order}
-          acc={acc}
+          price={price}
+          total={acc}
+          amount={amount}
+          count={count}
           percent={percent}
         />
       );
