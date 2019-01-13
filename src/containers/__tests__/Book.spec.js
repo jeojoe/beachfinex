@@ -24,6 +24,15 @@ describe('<Book />', () => {
         asks={asks}
         updateBook={updateBook}
         total={new BigNumber(4)}
+        ws={{
+          subscribed: false,
+          subscribing: true,
+          setSubscribed: jest.fn(),
+          subscribe: jest.fn(),
+          unsubscribe: jest.fn(),
+          toggle: jest.fn(),
+          setMoreActions: jest.fn(),
+        }}
       />,
     );
     expect(wrapped).toMatchSnapshot();
