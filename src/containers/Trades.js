@@ -38,7 +38,7 @@ export class Trades extends React.Component {
     // http://blog.bitfinex.com/api/websocket-api-update/
     const parsed = JSON.parse(msg.data);
     if (parsed.event === 'subscribed') {
-      ws.setSubscribed();
+      ws.subscribeSuccess();
       return;
     }
     const data = parsed;

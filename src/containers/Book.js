@@ -34,7 +34,7 @@ export class Book extends React.Component {
     const { initBook, updateBook, ws } = this.props;
     const parsed = JSON.parse(msg.data);
     if (parsed.event === 'subscribed') {
-      ws.setSubscribed();
+      ws.subscribeSuccess();
       return;
     }
     const data = parsed[1];

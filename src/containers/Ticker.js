@@ -57,7 +57,7 @@ export class Ticker extends React.Component {
     const { setTicker, ws } = this.props;
     const parsed = JSON.parse(msg.data);
     if (parsed.event === 'subscribed') {
-      ws.setSubscribed();
+      ws.subscribeSuccess();
       return;
     }
     const data = parsed[1];
@@ -68,14 +68,12 @@ export class Ticker extends React.Component {
 
   render() {
     const {
-      ticker: {
-        dailyChange,
-        dailyChangePerc,
-        lastPrice,
-        volume,
-        high,
-        low,
-      },
+      dailyChange,
+      dailyChangePerc,
+      lastPrice,
+      volume,
+      high,
+      low,
     } = this.props;
 
     if (!lastPrice) return 'Fetching..';
@@ -120,25 +118,24 @@ export class Ticker extends React.Component {
 }
 
 Ticker.propTypes = {
-  ticker: PropTypes.shape({
-    bid: PropTypes.number,
-    bidSize: PropTypes.number,
-    ask: PropTypes.number,
-    askSize: PropTypes.number,
-    dailyChange: PropTypes.number,
-    dailyChangePerc: PropTypes.number,
-    lastPrice: PropTypes.number,
-    volume: PropTypes.number,
-    high: PropTypes.number,
-    low: PropTypes.number,
-  }).isRequired,
+  dailyChange: PropTypes.number.isRequired,
+  dailyChangePerc: PropTypes.number.isRequired,
+  lastPrice: PropTypes.number.isRequired,
+  volume: PropTypes.number.isRequired,
+  high: PropTypes.number.isRequired,
+  low: PropTypes.number.isRequired,
   setTicker: PropTypes.func.isRequired,
   ws: PropTypes.shape(propTypesWS).isRequired,
 };
 
 function mapStateToProps(state) {
   return {
-    ticker: state.ticker,
+    dailyChange: state.ticker.dailyChange,
+    dailyChangePerc: state.ticker.dailyChangePerc,
+    lastPrice: state.ticker.lastPrice,
+    volume: state.ticker.volume,
+    high: state.ticker.high,
+    low: state.ticker.low,
   };
 }
 

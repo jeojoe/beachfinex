@@ -20,7 +20,7 @@ describe('<Trades />', () => {
         ws={{
           subscribed: false,
           subscribing: true,
-          setSubscribed: jest.fn(),
+          subscribeSuccess: jest.fn(),
           subscribe: jest.fn(),
           unsubscribe: jest.fn(),
           toggle: jest.fn(),
