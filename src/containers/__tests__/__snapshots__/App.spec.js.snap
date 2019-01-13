@@ -22,7 +22,7 @@ exports[`<App /> renders correctly 1`] = `
       className="col-1"
     >
       <styled.div>
-        <Connect(Trades) />
+        <WithWebSocket />
       </styled.div>
     </div>
   </div>

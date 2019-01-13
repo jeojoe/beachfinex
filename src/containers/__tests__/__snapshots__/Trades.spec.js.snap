@@ -16,12 +16,5 @@ exports[`<Trades /> renders correctly 1`] = `
   <div>
     Fetching..
   </div>
-  <styled.div>
-    <b>
-      OFFLINE
-    </b>
-     
-    (Subscribing..)
-  </styled.div>
 </div>
 `;

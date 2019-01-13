@@ -7,10 +7,13 @@ import dayjs from 'dayjs';
 
 import { actionCreators } from '../reducers/trades';
 import HeaderRow from '../components/HeaderRow';
+import withWebSocket, { propTypesWS } from '../hocs/withWebSocket';
 
-const ActionRow = styled.div`
-  padding: 10px 0 0;
-`;
+const getOpenMsg = () => ({
+  event: 'subscribe',
+  channel: 'trades',
+  symbol: 'tBTCUSD',
+});
 
 const TradeRow = styled(HeaderRow)`
   & p {
@@ -20,58 +23,21 @@ const TradeRow = styled(HeaderRow)`
 `;
 
 export class Trades extends React.Component {
-  state = {
-    subscribed: false,
-    subscribing: true,
-  };
-
   componentDidMount() {
-    this.subscribe();
-  }
-
-  subscribe = () => {
-    this.ws = new WebSocket('wss://api.bitfinex.com/ws/2');
-    this.ws.onopen = this.onOpen;
-    this.ws.onmessage = this.onMessage;
-    this.ws.onerror = this.onError;
-    this.setState({ subscribing: true });
-  }
-
-  unsubscribe = (err) => {
-    this.ws.close();
-    this.ws = null;
-    this.setState({ subscribed: false });
-    if (err) {
-      // Has error, not user's action => subscribe again
-      console.error(err);
-      this.subscribe();
-    }
-  }
-
-  toggleWebSocket = () => {
-    if (this.ws) {
-      this.unsubscribe();
-    } else {
-      this.subscribe();
-    }
-  }
-
-  onOpen = () => {
-    const openMsg = JSON.stringify({
-      event: 'subscribe',
-      channel: 'trades',
-      symbol: 'tBTCUSD',
+    const { ws } = this.props;
+    ws.subscribe({
+      newOpenMsg: getOpenMsg(),
+      newOnMessage: this.onMessage,
     });
-    this.ws.send(openMsg);
   }
 
   onMessage = (msg) => {
-    const { initTrades, updateTrades } = this.props;
+    const { initTrades, updateTrades, ws } = this.props;
     // listen to 'te' for speed
     // http://blog.bitfinex.com/api/websocket-api-update/
     const parsed = JSON.parse(msg.data);
     if (parsed.event === 'subscribed') {
-      this.setState({ subscribed: true, subscribing: false });
+      ws.setSubscribed();
       return;
     }
     const data = parsed;
@@ -83,8 +49,6 @@ export class Trades extends React.Component {
       }
     }
   }
-
-  onError = err => this.unsubscribe(err);
 
   renderRow() {
     const { trades } = this.props;
@@ -100,24 +64,6 @@ export class Trades extends React.Component {
     ));
   }
 
-  renderActions() {
-    const { subscribed, subscribing } = this.state;
-    return (
-      <ActionRow>
-        <b>{subscribed ? 'REAL-TIME' : 'OFFLINE' }</b>
-        {' '}
-        {subscribing
-          ? '(Subscribing..)'
-          : (
-            <button onClick={this.toggleWebSocket} type="button">
-              {subscribed ? 'Unsubscribe' : 'Subscribe'} Trades
-            </button>
-          )
-        }
-      </ActionRow>
-    );
-  }
-
   render() {
     return (
       <div>
@@ -129,7 +75,6 @@ export class Trades extends React.Component {
         <div>
           {this.renderRow()}
         </div>
-        {this.renderActions()}
       </div>
     );
   }
@@ -139,6 +84,7 @@ Trades.propTypes = {
   trades: PropTypes.instanceOf(List), // eslint-disable-line
   initTrades: PropTypes.func.isRequired,
   updateTrades: PropTypes.func.isRequired,
+  ws: PropTypes.shape(propTypesWS).isRequired,
 };
 
 function mapStateToProps(state) {
@@ -154,4 +100,4 @@ function mapDispatchToProps(dispatch) {
   };
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(Trades);
+export default withWebSocket(connect(mapStateToProps, mapDispatchToProps)(Trades));

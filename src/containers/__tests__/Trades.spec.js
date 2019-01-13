@@ -17,6 +17,15 @@ describe('<Trades />', () => {
         initTrades={initTrades}
         bids={trades}
         updateTrades={updateTrades}
+        ws={{
+          subscribed: false,
+          subscribing: true,
+          setSubscribed: jest.fn(),
+          subscribe: jest.fn(),
+          unsubscribe: jest.fn(),
+          toggle: jest.fn(),
+          setMoreActions: jest.fn(),
+        }}
       />,
     );
     expect(wrapped).toMatchSnapshot();
