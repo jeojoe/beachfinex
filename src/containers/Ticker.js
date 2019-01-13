@@ -37,7 +37,6 @@ const Value = styled.p`
 
 export class Ticker extends React.Component {
   componentDidMount() {
-    document.title = 'BTC-USD | Beachfinex';
     this.ws = new WebSocket('wss://api.bitfinex.com/ws/2');
     this.ws.onopen = this.onOpen;
     this.ws.onmessage = this.onMessage;
@@ -77,7 +76,7 @@ export class Ticker extends React.Component {
 
     if (!lastPrice) return 'Fetching..';
 
-    document.title = `BTC-USD ${lastPrice.toFixed(1)} | Beachfinex`;
+    document.title = `BTC/USD ${lastPrice.toFixed(1)} | Beachfinex`;
 
     return (
       <div className="row justify-between">
