@@ -5,6 +5,8 @@ import { connect } from 'react-redux';
 import styled from 'styled-components';
 
 import { actionCreators } from '../reducers/ticker';
+import ControlRow from '../components/ControlRow';
+import WSAction from '../components/WSAction';
 import withWebSocket, { propTypesWS } from '../hocs/withWebSocket';
 
 import BTC from '../images/BTC.png';
@@ -66,6 +68,19 @@ export class Ticker extends React.Component {
     }
   }
 
+  renderControl() {
+    const { ws } = this.props;
+    return (
+      <ControlRow>
+        <WSAction
+          subscribed={ws.subscribed}
+          subscribing={ws.subscribing}
+          toggle={ws.toggle}
+        />
+      </ControlRow>
+    );
+  }
+
   render() {
     const {
       dailyChange,
@@ -81,37 +96,40 @@ export class Ticker extends React.Component {
     document.title = `BTC/USD ${lastPrice.toFixed(1)} | Beachfinex`;
 
     return (
-      <div className="row justify-between">
-        <div className="row">
-          <Logo src={BTC} alt="BTC Logo" width="50" height="50" />
-          <Pair>BTC/USD</Pair>
+      <div>
+        <div className="row justify-between">
+          <div className="row">
+            <Logo src={BTC} alt="BTC Logo" width="50" height="50" />
+            <Pair>BTC/USD</Pair>
+          </div>
+          <div className="row align-center">
+            <div className="col-1 ticker">
+              <Label>Last Price</Label>
+              <Value>{lastPrice.toFixed(1)}</Value>
+            </div>
+            <div className="col-1 ticker">
+              <Label>24hr Change</Label>
+              <Value
+                color={dailyChange >= 0 ? 'lime' : 'red'}
+              >
+                {dailyChange.toFixed(2)} ({(dailyChangePerc * 100).toFixed(2)}%)
+              </Value>
+            </div>
+            <div className="col-1 ticker">
+              <Label>24hr High</Label>
+              <Value>{high.toFixed(1)}</Value>
+            </div>
+            <div className="col-1 ticker">
+              <Label>24hr Low</Label>
+              <Value>{low.toFixed(1)}</Value>
+            </div>
+            <div className="col-1 ticker">
+              <Label>24hr Volume</Label>
+              <Value>{volume.toFixed(2)}</Value>
+            </div>
+          </div>
         </div>
-        <div className="row align-center">
-          <div className="col-1 ticker">
-            <Label>Last Price</Label>
-            <Value>{lastPrice.toFixed(1)}</Value>
-          </div>
-          <div className="col-1 ticker">
-            <Label>24hr Change</Label>
-            <Value
-              color={dailyChange >= 0 ? 'lime' : 'red'}
-            >
-              {dailyChange.toFixed(2)} ({(dailyChangePerc * 100).toFixed(2)}%)
-            </Value>
-          </div>
-          <div className="col-1 ticker">
-            <Label>24hr High</Label>
-            <Value>{high.toFixed(1)}</Value>
-          </div>
-          <div className="col-1 ticker">
-            <Label>24hr Low</Label>
-            <Value>{low.toFixed(1)}</Value>
-          </div>
-          <div className="col-1 ticker">
-            <Label>24hr Volume</Label>
-            <Value>{volume.toFixed(2)}</Value>
-          </div>
-        </div>
+        {this.renderControl()}
       </div>
     );
   }

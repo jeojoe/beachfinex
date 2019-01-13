@@ -7,13 +7,13 @@ import { actionCreators } from '../reducers/book';
 const precisions = ['P0', 'P1', 'P2', 'P3'];
 
 const BookAction = ({
-  precision, zoomIn, zoomOut, zoom,
+  precision, changePrecision, zoomIn, zoomOut, zoom,
 }) => (
   <>
     <div>
       {precisions.map(prec => (
         <button
-          onClick={() => this.changePrecision(prec)}
+          onClick={() => changePrecision(prec)}
           type="button"
           key={prec}
         >
@@ -38,6 +38,7 @@ const BookAction = ({
 
 BookAction.propTypes = {
   precision: PropTypes.string.isRequired,
+  changePrecision: PropTypes.func.isRequired,
   zoomIn: PropTypes.func.isRequired,
   zoomOut: PropTypes.func.isRequired,
   zoom: PropTypes.number.isRequired,

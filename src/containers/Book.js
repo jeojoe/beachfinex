@@ -9,6 +9,8 @@ import { actionCreators } from '../reducers/book';
 import HeaderRow from '../components/HeaderRow';
 import BookRow from '../components/BookRow';
 import BookAction from '../components/BookAction';
+import ControlRow from '../components/ControlRow';
+import WSAction from '../components/WSAction';
 import withWebSocket, { propTypesWS } from '../hocs/withWebSocket';
 
 const getOpenMsg = precision => ({
@@ -19,14 +21,15 @@ const getOpenMsg = precision => ({
 });
 
 export class Book extends React.Component {
-  precision = 'P0';
+  state = {
+    precision: 'P0',
+  }
 
   componentDidMount() {
     const { ws } = this.props;
     ws.subscribe({
       newOpenMsg: getOpenMsg('P0'),
       newOnMessage: this.onMessage,
-      newActionRow: this.getActionRow('P0'),
     });
   }
 
@@ -51,16 +54,11 @@ export class Book extends React.Component {
     const { ws } = this.props;
     if (precision !== this.precision) {
       if (ws.subscribed) ws.unsubscribe();
-      ws.subscribe({
-        newOpenMsg: getOpenMsg(precision),
-        newActionRow: this.getActionRow(precision),
-      });
-      // Save
-      this.precision = precision;
+      ws.subscribe({ newOpenMsg: getOpenMsg(precision) });
+      // Save precision
+      this.setState({ precision });
     }
   }
-
-  getActionRow = precision => <BookAction precision={precision} />
 
   renderRow(side) {
     const { total, zoom } = this.props;
@@ -88,27 +86,48 @@ export class Book extends React.Component {
     });
   }
 
+  renderControl() {
+    const { precision } = this.state;
+    const { ws } = this.props;
+    return (
+      <ControlRow>
+        <WSAction
+          subscribed={ws.subscribed}
+          subscribing={ws.subscribing}
+          toggle={ws.toggle}
+        />
+        <BookAction
+          precision={precision}
+          changePrecision={this.changePrecision}
+        />
+      </ControlRow>
+    );
+  }
+
   render() {
     return (
-      <div className="row">
-        <div className="col-1">
-          <HeaderRow side="bids">
-            <p className="count">Count</p>
-            <p>Amount</p>
-            <p>Total</p>
-            <p className="price">Price</p>
-          </HeaderRow>
-          {this.renderRow('bids')}
+      <div>
+        <div className="row">
+          <div className="col-1">
+            <HeaderRow side="bids">
+              <p className="count">Count</p>
+              <p>Amount</p>
+              <p>Total</p>
+              <p className="price">Price</p>
+            </HeaderRow>
+            {this.renderRow('bids')}
+          </div>
+          <div className="col-1">
+            <HeaderRow side="asks">
+              <p className="price">Price</p>
+              <p>Amount</p>
+              <p>Total</p>
+              <p className="count">Count</p>
+            </HeaderRow>
+            {this.renderRow('asks')}
+          </div>
         </div>
-        <div className="col-1">
-          <HeaderRow side="asks">
-            <p className="price">Price</p>
-            <p>Amount</p>
-            <p>Total</p>
-            <p className="count">Count</p>
-          </HeaderRow>
-          {this.renderRow('asks')}
-        </div>
+        {this.renderControl()}
       </div>
     );
   }

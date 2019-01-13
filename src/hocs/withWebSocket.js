@@ -1,27 +1,16 @@
 import React from 'react';
-import styled from 'styled-components';
 import PropTypes from 'prop-types';
 
-import WSAction from '../components/WSAction';
-
-const ActionRow = styled.div`
-  display: flex;
-  justify-content: space-between;
-  padding: 10px 0 0;
-`;
-
-function withWebSocket(Component) {
+function withWebSocket(WrappedComponent) {
   return class WithWebSocket extends React.Component {
     state = {
       subscribed: false,
       subscribing: true,
-      actionRow: null,
     }
 
-    subscribe = ({ newOpenMsg, newOnMessage, newActionRow } = {}) => {
+    subscribe = ({ newOpenMsg, newOnMessage } = {}) => {
       if (newOpenMsg) this.openMsg = newOpenMsg;
       if (newOnMessage) this.onMessage = newOnMessage;
-      if (newActionRow) this.setState({ actionRow: newActionRow });
       this.ws = new WebSocket('wss://api.bitfinex.com/ws/2');
       this.ws.onopen = this.onOpen;
       this.ws.onmessage = this.onMessage;
@@ -51,37 +40,20 @@ function withWebSocket(Component) {
       subscribing: false,
     });
 
-    renderActions() {
-      const { subscribed, subscribing, actionRow } = this.state;
-      return (
-        <ActionRow>
-          <WSAction
-            subscribed={subscribed}
-            subscribing={subscribing}
-            toggle={this.toggle}
-          />
-          {actionRow}
-        </ActionRow>
-      );
-    }
-
     render() {
       const { subscribed, subscribing } = this.state;
-
       return (
-        <div>
-          <Component
-            {...this.props}
-            ws={{
-              subscribed,
-              subscribing,
-              subscribeSuccess: this.subscribeSuccess,
-              subscribe: this.subscribe,
-              unsubscribe: this.unsubscribe,
-            }}
-          />
-          {this.renderActions()}
-        </div>
+        <WrappedComponent
+          {...this.props}
+          ws={{
+            subscribed,
+            subscribing,
+            subscribeSuccess: this.subscribeSuccess,
+            subscribe: this.subscribe,
+            unsubscribe: this.unsubscribe,
+            toggle: this.toggle,
+          }}
+        />
       );
     }
   };
@@ -93,6 +65,7 @@ export const propTypesWS = {
   subscribeSuccess: PropTypes.func.isRequired,
   subscribe: PropTypes.func.isRequired,
   unsubscribe: PropTypes.func.isRequired,
+  toggle: PropTypes.func.isRequired,
 };
 
 export default withWebSocket;

@@ -8,6 +8,8 @@ import dayjs from 'dayjs';
 
 import { actionCreators } from '../reducers/trades';
 import HeaderRow from '../components/HeaderRow';
+import ControlRow from '../components/ControlRow';
+import WSAction from '../components/WSAction';
 import withWebSocket, { propTypesWS } from '../hocs/withWebSocket';
 
 const getOpenMsg = () => ({
@@ -65,6 +67,19 @@ export class Trades extends React.Component {
     ));
   }
 
+  renderControl() {
+    const { ws } = this.props;
+    return (
+      <ControlRow>
+        <WSAction
+          subscribed={ws.subscribed}
+          subscribing={ws.subscribing}
+          toggle={ws.toggle}
+        />
+      </ControlRow>
+    );
+  }
+
   render() {
     return (
       <div>
@@ -76,6 +91,7 @@ export class Trades extends React.Component {
         <div>
           {this.renderRow()}
         </div>
+        {this.renderControl()}
       </div>
     );
   }
