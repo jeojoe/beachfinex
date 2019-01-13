@@ -15,7 +15,7 @@ exports[`<App /> renders correctly 1`] = `
       className="col-2"
     >
       <styled.div>
-        <Connect(Book) />
+        <WithWebSocket />
       </styled.div>
     </div>
     <div

@@ -91,23 +91,23 @@ export class Ticker extends React.Component {
             <Value>{lastPrice.toFixed(1)}</Value>
           </div>
           <div className="col-1 ticker">
-            <Label>Change 24hr</Label>
+            <Label>24hr Change</Label>
             <Value
               color={dailyChange >= 0 ? 'lime' : 'red'}
             >
-              {dailyChange.toFixed(2)} ({dailyChangePerc.toFixed(2)}%)
+              {dailyChange.toFixed(2)} ({(dailyChangePerc * 100).toFixed(2)}%)
             </Value>
           </div>
           <div className="col-1 ticker">
-            <Label>High 24hr</Label>
+            <Label>24hr High</Label>
             <Value>{high.toFixed(1)}</Value>
           </div>
           <div className="col-1 ticker">
-            <Label>Low 24hr</Label>
+            <Label>24hr Low</Label>
             <Value>{low.toFixed(1)}</Value>
           </div>
           <div className="col-1 ticker">
-            <Label>Volume 24hr</Label>
+            <Label>24hr Volume</Label>
             <Value>{volume.toFixed(2)}</Value>
           </div>
         </div>
