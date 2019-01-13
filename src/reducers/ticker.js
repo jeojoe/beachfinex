@@ -18,16 +18,16 @@ export const actionCreators = {
 // Reducer
 
 const initialState = {
-  bid: null,
-  bidSize: null,
-  ask: null,
-  askSize: null,
-  dailyChange: null,
-  dailyChangePerc: null,
-  lastPrice: null,
-  volume: null,
-  high: null,
-  low: null,
+  bid: 0,
+  bidSize: 0,
+  ask: 0,
+  askSize: 0,
+  dailyChange: 0,
+  dailyChangePerc: 0,
+  lastPrice: 0,
+  volume: 0,
+  high: 0,
+  low: 0,
 };
 
 const ticker = (state = initialState, action) => {

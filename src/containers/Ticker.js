@@ -29,6 +29,7 @@ const Label = styled.p`
   font-size: 12px;
   font-weight: bold;
   margin-bottom: 10px;
+  white-space: nowrap;
 `;
 
 const Value = styled.p`
@@ -90,8 +91,6 @@ export class Ticker extends React.Component {
       high,
       low,
     } = this.props;
-
-    if (!lastPrice) return 'Fetching..';
 
     document.title = `BTC/USD ${lastPrice.toFixed(1)} | Beachfinex`;
 

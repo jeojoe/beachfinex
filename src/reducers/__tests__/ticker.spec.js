@@ -23,16 +23,16 @@ describe('Ticker action reducer', () => {
   it('handles initial state correctly', () => {
     const reduced = ticker(undefined, {});
     expect(reduced).toEqual({
-      bid: null,
-      bidSize: null,
-      ask: null,
-      askSize: null,
-      dailyChange: null,
-      dailyChangePerc: null,
-      lastPrice: null,
-      volume: null,
-      high: null,
-      low: null,
+      bid: 0,
+      bidSize: 0,
+      ask: 0,
+      askSize: 0,
+      dailyChange: 0,
+      dailyChangePerc: 0,
+      lastPrice: 0,
+      volume: 0,
+      high: 0,
+      low: 0,
     });
   });
 

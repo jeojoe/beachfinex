@@ -136,7 +136,7 @@ Book.propTypes = {
   total: PropTypes.instanceOf(BigNumber).isRequired,
   ws: PropTypes.shape(propTypesWS).isRequired,
   zoom: PropTypes.number.isRequired,
-  precision: PropTypes.oneOfType(
+  precision: PropTypes.oneOf(
     ['P0', 'P1', 'P2', 'P3'],
   ).isRequired,
   setPrecision: PropTypes.func.isRequired,

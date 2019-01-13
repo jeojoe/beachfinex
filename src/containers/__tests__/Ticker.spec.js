@@ -6,21 +6,14 @@ import { Ticker } from '../Ticker';
 describe('<Ticker />', () => {
   it('renders correctly', () => {
     const setTicker = jest.fn();
-    const ticker = {
-      bid: 0,
-      bidSize: 1,
-      ask: 2,
-      askSize: 3,
-      dailyChange: 4,
-      dailyChangePerc: 5,
-      lastPrice: 6,
-      volume: 7,
-      high: 8,
-      low: 9,
-    };
     const wrapped = shallow(
       <Ticker
-        ticker={ticker}
+        dailyChange={1}
+        dailyChangePerc={2}
+        lastPrice={3}
+        volume={4}
+        high={5}
+        low={6}
         setTicker={setTicker}
         ws={{
           subscribed: false,
