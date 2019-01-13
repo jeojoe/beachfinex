@@ -37,12 +37,11 @@ export class Book extends React.Component {
       return;
     }
     const data = parsed[1];
-    if (data && data !== 'hb') {
-      if (Array.isArray(data[0])) {
-        initBook(data);
-      } else {
-        updateBook(data);
-      }
+    const valid = data && data !== 'hb';
+    if (valid) {
+      const init = Array.isArray(data[0]);
+      if (init) initBook(data);
+      else updateBook(data);
     }
   }
 

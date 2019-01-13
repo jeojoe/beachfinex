@@ -36,20 +36,19 @@ export class Trades extends React.Component {
 
   onMessage = (msg) => {
     const { initTrades, updateTrades, ws } = this.props;
-    // listen to 'te' for speed
-    // http://blog.bitfinex.com/api/websocket-api-update/
     const parsed = JSON.parse(msg.data);
     if (parsed.event === 'subscribed') {
       ws.subscribeSuccess();
       return;
     }
+    // listen to 'te' for speed
+    // http://blog.bitfinex.com/api/websocket-api-update/
     const data = parsed;
-    if (data[1] && data[1] !== 'hb' && data[1] !== 'tu') {
-      if (data[1] !== 'te') {
-        initTrades(data[1]);
-      } else {
-        updateTrades(data[2]);
-      }
+    const valid = data[1] && data[1] !== 'hb' && data[1] !== 'tu';
+    if (valid) {
+      const init = data[1] !== 'te';
+      if (init) initTrades(data[1]);
+      else updateTrades(data[2]);
     }
   }
 

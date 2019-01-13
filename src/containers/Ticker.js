@@ -64,9 +64,8 @@ export class Ticker extends React.Component {
       return;
     }
     const data = parsed[1];
-    if (data && data !== 'hb') {
-      setTicker(data);
-    }
+    const valid = data && data !== 'hb';
+    if (valid) setTicker(data);
   }
 
   renderControl() {
