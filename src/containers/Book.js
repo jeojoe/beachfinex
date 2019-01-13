@@ -18,10 +18,6 @@ const getOpenMsg = precision => ({
 });
 
 export class Book extends React.Component {
-  state = {
-    zoom: 1,
-  };
-
   componentDidMount() {
     const { ws } = this.props;
     ws.subscribe({
@@ -60,43 +56,37 @@ export class Book extends React.Component {
     }
   }
 
-  zoomIn = () => this.setState(prev => ({
-    zoom: prev.zoom < 3 ? prev.zoom + 0.1 : prev.zoom,
-  }))
-
-  zoomOut = () => this.setState(prev => ({
-    zoom: prev.zoom > 0.3 ? prev.zoom - 0.1 : prev.zoom,
-  }))
-
-  getActionRow = precision => (
-    <>
-      <div>
-        {precisions.map(prec => (
-          <button
-            onClick={() => this.changePrecision(prec)}
-            type="button"
-            key={prec}
-          >
-            {prec}
+  getActionRow = (precision) => {
+    const { zoomIn, zoomOut } = this.props;
+    return (
+      <>
+        <div>
+          {precisions.map(prec => (
+            <button
+              onClick={() => this.changePrecision(prec)}
+              type="button"
+              key={prec}
+            >
+              {prec}
+            </button>
+          ))}
+          {' '}
+          <b>Current Precision: {precision}</b>
+        </div>
+        <div>
+          <button onClick={zoomIn} type="button">
+            Zoom In +
           </button>
-        ))}
-        {' '}
-        <b>Current Precision: {precision}</b>
-      </div>
-      <div>
-        <button onClick={this.zoomIn} type="button">
-          Zoom In +
-        </button>
-        <button onClick={this.zoomOut} type="button">
-          Zoom out -
-        </button>
-      </div>
-    </>
-  )
+          <button onClick={zoomOut} type="button">
+            Zoom out -
+          </button>
+        </div>
+      </>
+    );
+  }
 
   renderRow(side) {
-    const { total } = this.props;
-    const { zoom } = this.state;
+    const { total, zoom } = this.props;
     const book = this.props[side]; // eslint-disable-line
 
     if (!book) return 'Fetching..';
@@ -154,12 +144,16 @@ Book.propTypes = {
   updateBook: PropTypes.func.isRequired,
   total: PropTypes.instanceOf(BigNumber).isRequired,
   ws: PropTypes.shape(propTypesWS).isRequired,
+  zoomIn: PropTypes.func.isRequired,
+  zoomOut: PropTypes.func.isRequired,
+  zoom: PropTypes.number.isRequired,
 };
 
 function mapStateToProps(state) {
   return {
     bids: state.book.bids,
     asks: state.book.asks,
+    zoom: state.book.zoom,
     total: (new BigNumber(state.book.asksTotal))
       .abs()
       .plus(state.book.bidsTotal),
@@ -170,6 +164,8 @@ function mapDispatchToProps(dispatch) {
   return {
     initBook: orders => dispatch(actionCreators.initBook(orders)),
     updateBook: order => dispatch(actionCreators.updateBook(order)),
+    zoomIn: () => dispatch(actionCreators.zoomIn()),
+    zoomOut: () => dispatch(actionCreators.zoomOut()),
   };
 }
 

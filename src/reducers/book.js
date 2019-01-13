@@ -74,6 +74,7 @@ const book = (state = initialState, action) => {
       const sortedBids = sortBook('bids', Map(iterableBids));
       const sortedAsks = sortBook('asks', Map(iterableAsks));
       return {
+        ...state,
         bids: sortedBids,
         bidsTotal: sumBook(sortedBids),
         asks: sortedAsks,
