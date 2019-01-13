@@ -128,6 +128,7 @@ describe('Book reducer', () => {
         [4, [4, 1, -1]],
       ]),
       asksTotal: -2,
+      zoom: 1,
     });
   });
 

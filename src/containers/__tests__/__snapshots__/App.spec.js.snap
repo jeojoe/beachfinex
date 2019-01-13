@@ -6,7 +6,7 @@ exports[`<App /> renders correctly 1`] = `
     Beachfinex
   </styled.h1>
   <styled.div>
-    <WithWebSocket />
+    <Connect(WithWebSocket) />
   </styled.div>
   <div
     className="row"
@@ -15,14 +15,14 @@ exports[`<App /> renders correctly 1`] = `
       className="col-2"
     >
       <styled.div>
-        <WithWebSocket />
+        <Connect(WithWebSocket) />
       </styled.div>
     </div>
     <div
       className="col-1"
     >
       <styled.div>
-        <WithWebSocket />
+        <Connect(WithWebSocket) />
       </styled.div>
     </div>
   </div>

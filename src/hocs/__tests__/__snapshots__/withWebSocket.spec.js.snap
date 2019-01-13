@@ -9,19 +9,16 @@ exports[`withWebSocket() enhances input component correctly 1`] = `
         "subscribe": [Function],
         "subscribed": false,
         "subscribing": true,
-        "toggle": [Function],
         "unsubscribe": [Function],
       }
     }
   />
   <styled.div>
-    <div>
-      <b>
-        OFFLINE
-      </b>
-       
-      (Subscribing..)
-    </div>
+    <WSAction
+      subscribed={false}
+      subscribing={true}
+      toggle={[Function]}
+    />
   </styled.div>
 </div>
 `;
