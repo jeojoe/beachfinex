@@ -1,36 +1,42 @@
 import React from 'react';
+import { compose } from 'redux';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { Map } from 'immutable';
 import BigNumber from 'bignumber.js';
-import styled from 'styled-components';
 
 import { actionCreators } from '../reducers/book';
 import HeaderRow from '../components/HeaderRow';
 import BookRow from '../components/BookRow';
+import BookAction from '../components/BookAction';
+import ControlRow from '../components/ControlRow';
+import WSAction from '../components/WSAction';
+import withWebSocket, { propTypesWS } from '../hocs/withWebSocket';
 
-const ActionRow = styled.div`
-  display: flex;
-  justify-content: space-between;
-  padding: 10px 0 0;
-`;
+const getOpenMsg = precision => ({
+  event: 'subscribe',
+  channel: 'book',
+  symbol: 'tBTCUSD',
+  prec: precision,
+});
 
-class Book extends React.Component {
-  state = {
-    subscribed: false,
-    subscribing: true,
-    precision: 'P0',
-    zoom: 1,
-  };
+export class Book extends React.Component {
+  lastRendered = Date.now();
 
   componentDidMount() {
-    this.lastRendered = Date.now();
-    this.subscribe();
+    const { ws } = this.props;
+    ws.subscribe({
+      newOpenMsg: getOpenMsg('P0'),
+      newOnMessage: this.onMessage,
+    });
   }
 
-  shouldComponentUpdate(nextProps, nextState) {
-    if (this.state !== nextState) return true;
-    // Only 1 render per 0.25s
+  shouldComponentUpdate(nextProps) {
+    const { precision, zoom, ws } = this.props;
+    if (precision !== nextProps.precision) return true;
+    if (zoom !== nextProps.zoom) return true;
+    if (ws.subscribed !== nextProps.ws.subscribed) return true;
+    if (ws.subscribing !== nextProps.ws.subscribing) return true;
     const now = Date.now();
     const timeOk = now - this.lastRendered > 250;
     const bookFull = nextProps.bids && nextProps.bids.size === 25 && nextProps.asks.size === 25;
@@ -41,89 +47,41 @@ class Book extends React.Component {
     return false;
   }
 
-  subscribe = () => {
-    this.ws = new WebSocket('wss://api.bitfinex.com/ws/2');
-    this.ws.onopen = this.onOpen;
-    this.ws.onmessage = this.onMessage;
-    this.ws.onerror = this.onError;
-    this.setState({ subscribing: true });
-  }
-
-  unsubscribe = (err) => {
-    this.ws.close();
-    this.ws = null;
-    this.setState({ subscribed: false });
-    if (err) {
-      // Has error, not user's action => subscribe again
-      console.error(err);
-      this.subscribe();
-    }
-  }
-
-  toggleWebSocket = () => {
-    if (this.ws) {
-      this.unsubscribe();
-    } else {
-      this.subscribe();
-    }
-  }
-
-  onOpen = () => {
-    const { precision } = this.state;
-    const openMsg = JSON.stringify({
-      event: 'subscribe',
-      channel: 'book',
-      symbol: 'tBTCUSD',
-      prec: precision,
-    });
-    this.ws.send(openMsg);
-  }
-
   onMessage = (msg) => {
-    const { initBook, updateBook } = this.props;
+    const { initBook, updateBook, ws } = this.props;
     const parsed = JSON.parse(msg.data);
     if (parsed.event === 'subscribed') {
-      this.setState({ subscribed: true, subscribing: false });
+      ws.subscribeSuccess();
       return;
     }
     const data = parsed[1];
-    if (data && data !== 'hb') {
-      if (Array.isArray(data[0])) {
-        initBook(data);
-      } else {
-        updateBook(data);
-      }
+    const valid = data && data !== 'hb';
+    if (valid) {
+      const init = Array.isArray(data[0]);
+      if (init) initBook(data);
+      else updateBook(data);
     }
   }
 
-  onError = err => this.unsubscribe(err);
-
-  changePrecision = (precision) => {
-    const { precision: current } = this.state;
-    if (precision !== current) {
-      if (this.ws) this.unsubscribe();
-      this.setState({ precision }, this.subscribe);
+  changePrecision = (prec) => {
+    const { ws, precision: prevPrec, setPrecision } = this.props;
+    if (prec !== prevPrec) {
+      if (ws.subscribed) ws.unsubscribe();
+      ws.subscribe({ newOpenMsg: getOpenMsg(prec) });
+      // Save precision
+      setPrecision(prec);
     }
   }
-
-  zoomIn = () => this.setState(prev => ({
-    zoom: prev.zoom < 3 ? prev.zoom + 0.1 : prev.zoom,
-  }))
-
-  zoomOut = () => this.setState(prev => ({
-    zoom: prev.zoom > 0.3 ? prev.zoom - 0.1 : prev.zoom,
-  }))
 
   renderRow(side) {
-    const { total } = this.props;
-    const { zoom } = this.state;
+    const { total, zoom } = this.props;
     const book = this.props[side]; // eslint-disable-line
 
     if (!book) return 'Fetching..';
 
     let acc = new BigNumber(0);
     return book.toArray().map(([, order]) => {
-      const [price, , amount] = order;
+      const [price, count, amount] = order;
       acc = acc.plus(amount);
       const percent = acc.abs().dividedBy(total)
         .times(100)
@@ -133,55 +91,30 @@ class Book extends React.Component {
         <BookRow
           key={`${price}${amount}`}
           side={side}
-          order={order}
-          acc={acc}
+          price={price}
+          total={acc}
+          amount={amount}
+          count={count}
           percent={percent}
         />
       );
     });
   }
 
-  renderActions() {
-    const { subscribed, subscribing, precision } = this.state;
+  renderControl() {
+    const { ws, precision } = this.props;
     return (
-      <ActionRow>
-        <div>
-          <b>{subscribed ? 'REAL-TIME' : 'OFFLINE' }</b>
-          {' '}
-          {subscribing
-            ? '(Subscribing..)'
-            : (
-              <button onClick={this.toggleWebSocket} type="button">
-                {subscribed ? 'Unsubscribe' : 'Subscribe'} Order Book
-              </button>
-            )
-          }
-        </div>
-        <div>
-          <button onClick={() => this.changePrecision('P0')} type="button">
-            P0
-          </button>
-          <button onClick={() => this.changePrecision('P1')} type="button">
-            P1
-          </button>
-          <button onClick={() => this.changePrecision('P2')} type="button">
-            P2
-          </button>
-          <button onClick={() => this.changePrecision('P3')} type="button">
-            P3
-          </button>
-          {' '}
-          <b>Current Precision: {precision}</b>
-        </div>
-        <div>
-          <button onClick={this.zoomIn} type="button">
-            Zoom In +
-          </button>
-          <button onClick={this.zoomOut} type="button">
-            Zoom out -
-          </button>
-        </div>
-      </ActionRow>
+      <ControlRow>
+        <WSAction
+          subscribed={ws.subscribed}
+          subscribing={ws.subscribing}
+          toggle={ws.toggle}
+        />
+        <BookAction
+          precision={precision}
+          changePrecision={this.changePrecision}
+        />
+      </ControlRow>
     );
   }
 
@@ -208,7 +141,7 @@ class Book extends React.Component {
             {this.renderRow('asks')}
           </div>
         </div>
-        {this.renderActions()}
+        {this.renderControl()}
       </div>
     );
   }
@@ -220,12 +153,20 @@ Book.propTypes = {
   asks: PropTypes.instanceOf(Map), // eslint-disable-line
   updateBook: PropTypes.func.isRequired,
   total: PropTypes.instanceOf(BigNumber).isRequired,
+  ws: PropTypes.shape(propTypesWS).isRequired,
+  zoom: PropTypes.number.isRequired,
+  precision: PropTypes.oneOf(
+    ['P0', 'P1', 'P2', 'P3'],
+  ).isRequired,
+  setPrecision: PropTypes.func.isRequired,
 };
 
 function mapStateToProps(state) {
   return {
     bids: state.book.bids,
     asks: state.book.asks,
+    precision: state.book.precision,
+    zoom: state.book.zoom,
     total: (new BigNumber(state.book.asksTotal))
       .abs()
       .plus(state.book.bidsTotal),
@@ -236,7 +177,13 @@ function mapDispatchToProps(dispatch) {
   return {
     initBook: orders => dispatch(actionCreators.initBook(orders)),
     updateBook: order => dispatch(actionCreators.updateBook(order)),
+    setPrecision: prec => dispatch(actionCreators.setPrecision(prec)),
   };
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(Book);
+const enhance = compose(
+  connect(mapStateToProps, mapDispatchToProps),
+  withWebSocket,
+);
+
+export default enhance(Book);

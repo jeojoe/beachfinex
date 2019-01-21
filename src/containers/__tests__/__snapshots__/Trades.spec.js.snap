@@ -1,0 +1,27 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`<Trades /> renders correctly 1`] = `
+<div>
+  <styled.div>
+    <p>
+      Time
+    </p>
+    <p>
+      Price
+    </p>
+    <p>
+      Amount
+    </p>
+  </styled.div>
+  <div>
+    Fetching..
+  </div>
+  <styled.div>
+    <WSAction
+      subscribed={false}
+      subscribing={true}
+      toggle={[MockFunction]}
+    />
+  </styled.div>
+</div>
+`;

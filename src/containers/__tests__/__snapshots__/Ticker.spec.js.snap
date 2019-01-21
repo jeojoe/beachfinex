@@ -1,0 +1,89 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`<Ticker /> renders correctly 1`] = `
+<div>
+  <div
+    className="row justify-between"
+  >
+    <div
+      className="row"
+    >
+      <styled.img
+        alt="BTC Logo"
+        height="50"
+        src="BTC.png"
+        width="50"
+      />
+      <styled.h1>
+        BTC/USD
+      </styled.h1>
+    </div>
+    <div
+      className="row align-center"
+    >
+      <div
+        className="col-1 ticker"
+      >
+        <styled.p>
+          Last Price
+        </styled.p>
+        <styled.p>
+          3.0
+        </styled.p>
+      </div>
+      <div
+        className="col-1 ticker"
+      >
+        <styled.p>
+          24hr Change
+        </styled.p>
+        <styled.p
+          color="lime"
+        >
+          1.00
+           (
+          200.00
+          %)
+        </styled.p>
+      </div>
+      <div
+        className="col-1 ticker"
+      >
+        <styled.p>
+          24hr High
+        </styled.p>
+        <styled.p>
+          5.0
+        </styled.p>
+      </div>
+      <div
+        className="col-1 ticker"
+      >
+        <styled.p>
+          24hr Low
+        </styled.p>
+        <styled.p>
+          6.0
+        </styled.p>
+      </div>
+      <div
+        className="col-1 ticker"
+      >
+        <styled.p>
+          24hr Volume
+        </styled.p>
+        <styled.p>
+          4.00
+        </styled.p>
+      </div>
+    </div>
+  </div>
+  <styled.div>
+    <WSAction
+      subscribed={false}
+      subscribing={true}
+      toggle={[MockFunction]}
+    />
+  </styled.div>
+</div>
+`;

@@ -1,4 +1,5 @@
 import React from 'react';
+import { compose } from 'redux';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { List } from 'immutable';
@@ -7,10 +8,15 @@ import dayjs from 'dayjs';
 
 import { actionCreators } from '../reducers/trades';
 import HeaderRow from '../components/HeaderRow';
+import ControlRow from '../components/ControlRow';
+import WSAction from '../components/WSAction';
+import withWebSocket, { propTypesWS } from '../hocs/withWebSocket';
 
-const ActionRow = styled.div`
-  padding: 10px 0 0;
-`;
+const getOpenMsg = () => ({
+  event: 'subscribe',
+  channel: 'trades',
+  symbol: 'tBTCUSD',
+});
 
 const TradeRow = styled(HeaderRow)`
   & p {
@@ -19,72 +25,32 @@ const TradeRow = styled(HeaderRow)`
   }
 `;
 
-class Trades extends React.Component {
-  state = {
-    subscribed: false,
-    subscribing: true,
-  };
-
+export class Trades extends React.Component {
   componentDidMount() {
-    this.subscribe();
-  }
-
-  subscribe = () => {
-    this.ws = new WebSocket('wss://api.bitfinex.com/ws/2');
-    this.ws.onopen = this.onOpen;
-    this.ws.onmessage = this.onMessage;
-    this.ws.onerror = this.onError;
-    this.setState({ subscribing: true });
-  }
-
-  unsubscribe = (err) => {
-    this.ws.close();
-    this.ws = null;
-    this.setState({ subscribed: false });
-    if (err) {
-      // Has error, not user's action => subscribe again
-      console.error(err);
-      this.subscribe();
-    }
-  }
-
-  toggleWebSocket = () => {
-    if (this.ws) {
-      this.unsubscribe();
-    } else {
-      this.subscribe();
-    }
-  }
-
-  onOpen = () => {
-    const openMsg = JSON.stringify({
-      event: 'subscribe',
-      channel: 'trades',
-      symbol: 'tBTCUSD',
+    const { ws } = this.props;
+    ws.subscribe({
+      newOpenMsg: getOpenMsg(),
+      newOnMessage: this.onMessage,
     });
-    this.ws.send(openMsg);
   }
 
   onMessage = (msg) => {
-    const { initTrades, updateTrades } = this.props;
-    // listen to 'te' for speed
-    // http://blog.bitfinex.com/api/websocket-api-update/
+    const { initTrades, updateTrades, ws } = this.props;
     const parsed = JSON.parse(msg.data);
     if (parsed.event === 'subscribed') {
-      this.setState({ subscribed: true, subscribing: false });
+      ws.subscribeSuccess();
       return;
     }
+    // listen to 'te' for speed
+    // http://blog.bitfinex.com/api/websocket-api-update/
     const data = parsed;
-    if (data[1] && data[1] !== 'hb' && data[1] !== 'tu') {
-      if (data[1] !== 'te') {
-        initTrades(data[1]);
-      } else {
-        updateTrades(data[2]);
-      }
+    const valid = data[1] && data[1] !== 'hb' && data[1] !== 'tu';
+    if (valid) {
+      const init = data[1] !== 'te';
+      if (init) initTrades(data[1]);
+      else updateTrades(data[2]);
     }
   }
-
-  onError = err => this.unsubscribe(err);
 
   renderRow() {
     const { trades } = this.props;
@@ -100,21 +66,16 @@ class Trades extends React.Component {
     ));
   }
 
-  renderActions() {
-    const { subscribed, subscribing } = this.state;
+  renderControl() {
+    const { ws } = this.props;
     return (
-      <ActionRow>
-        <b>{subscribed ? 'REAL-TIME' : 'OFFLINE' }</b>
-        {' '}
-        {subscribing
-          ? '(Subscribing..)'
-          : (
-            <button onClick={this.toggleWebSocket} type="button">
-              {subscribed ? 'Unsubscribe' : 'Subscribe'} Trades
-            </button>
-          )
-        }
-      </ActionRow>
+      <ControlRow>
+        <WSAction
+          subscribed={ws.subscribed}
+          subscribing={ws.subscribing}
+          toggle={ws.toggle}
+        />
+      </ControlRow>
     );
   }
 
@@ -129,7 +90,7 @@ class Trades extends React.Component {
         <div>
           {this.renderRow()}
         </div>
-        {this.renderActions()}
+        {this.renderControl()}
       </div>
     );
   }
@@ -139,6 +100,7 @@ Trades.propTypes = {
   trades: PropTypes.instanceOf(List), // eslint-disable-line
   initTrades: PropTypes.func.isRequired,
   updateTrades: PropTypes.func.isRequired,
+  ws: PropTypes.shape(propTypesWS).isRequired,
 };
 
 function mapStateToProps(state) {
@@ -154,4 +116,9 @@ function mapDispatchToProps(dispatch) {
   };
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(Trades);
+const enhance = compose(
+  connect(mapStateToProps, mapDispatchToProps),
+  withWebSocket,
+);
+
+export default enhance(Trades);

@@ -1,0 +1,30 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`<App /> renders correctly 1`] = `
+<styled.div>
+  <styled.h1>
+    Beachfinex
+  </styled.h1>
+  <styled.div>
+    <Connect(WithWebSocket) />
+  </styled.div>
+  <div
+    className="row"
+  >
+    <div
+      className="col-2"
+    >
+      <styled.div>
+        <Connect(WithWebSocket) />
+      </styled.div>
+    </div>
+    <div
+      className="col-1"
+    >
+      <styled.div>
+        <Connect(WithWebSocket) />
+      </styled.div>
+    </div>
+  </div>
+</styled.div>
+`;

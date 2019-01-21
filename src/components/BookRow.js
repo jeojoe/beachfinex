@@ -24,12 +24,11 @@ const Row = styled(HeaderRow)`
 `;
 
 const BookRow = ({
-  side, order, acc, percent,
+  side, price, total, amount, count, percent,
 }) => {
-  const [price, count, amount] = order;
   const countStr = count.toFixed(0);
   const amountStr = Math.abs(amount).toFixed(2);
-  const totalStr = acc.abs().toFixed(2);
+  const totalStr = total.abs().toFixed(2);
   const priceStr = new BigNumber(price).toFixed(2);
 
   return (
@@ -61,8 +60,10 @@ const BookRow = ({
 
 BookRow.propTypes = {
   side: PropTypes.string.isRequired,
-  order: PropTypes.arrayOf(PropTypes.number).isRequired,
-  acc: PropTypes.instanceOf(BigNumber).isRequired,
+  price: PropTypes.number.isRequired,
+  amount: PropTypes.number.isRequired,
+  count: PropTypes.number.isRequired,
+  total: PropTypes.instanceOf(BigNumber).isRequired,
   percent: PropTypes.string.isRequired,
 };
 
