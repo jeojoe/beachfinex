@@ -4,7 +4,9 @@
 
 Order Book, Ticker and Trades are implemented according to the challenge and Bitfinex's corresponding widgets. Precision and depth bars scale on order book can be changed (UX can be improved). WebSocket connection controls are handled separately in each container (Book, Ticker, Trades). The market is fixed to tBTCUSD pair.
 
-*I personally wanted to do refactoring after the challenge is finished, so please only inspect the 8 hrs result on `master` branch, not `refactor` branch.*
+~~*I personally wanted to do refactoring after the challenge is finished, so please only inspect the 8 hrs result on `master` branch, not `refactor` branch.*~~
+
+*`refactor` branch was merged to `master`*
 
 ## Up and Running
   ```
